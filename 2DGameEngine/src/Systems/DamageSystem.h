@@ -1,0 +1,21 @@
+#pragma once
+
+#include "../ECS/ECS.h"
+
+#include "../EventBus/EventBus.h"
+#include "../Events/CollisionEvent.h"
+
+class DamageSystem : public System
+{
+public:
+	DamageSystem();
+
+	void SubscribeToEvents(EventBus& eventBus);
+
+	void Update(const float deltaTime);
+
+private:
+
+	void OnCollisionHappened(CollisionEvent& event);
+};
+
