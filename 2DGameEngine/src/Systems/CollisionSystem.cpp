@@ -37,8 +37,7 @@ void CollisionSystem::Update(EventBus& eventBus)
 
 			const Aabb aabbOther(GetEntityAabb(entityOther));
 			if (aabb.Overlaps(aabbOther)) {
-				CollisionEvent event(entity, entityOther);
-				eventBus.EmitEvent<CollisionEvent>(event);
+				eventBus.EmitEvents<CollisionEvent>(CollisionEvent(entity, entityOther));
 			}
 		}
 	}

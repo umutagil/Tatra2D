@@ -13,7 +13,7 @@ DamageSystem::DamageSystem()
 
 void DamageSystem::SubscribeToEvents(EventBus& eventBus)
 {
-	eventBus.SubscribeToEvent<CollisionEvent>(this, &DamageSystem::OnCollisionHappened);
+	eventBus.SubscribeToEvents(this, &DamageSystem::OnCollisionHappened);
 }
 
 void DamageSystem::OnCollisionHappened(CollisionEvent& event)

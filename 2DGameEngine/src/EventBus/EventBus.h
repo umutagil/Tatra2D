@@ -5,6 +5,7 @@
 #include <memory>
 #include <list>
 #include <functional>
+#include <utility>
 
 #include "Event.h"
 
@@ -61,11 +62,11 @@ public:
 
 	void Reset();
 
-	template<typename TEvent, typename TOwner>
-	void SubscribeToEvent(TOwner* ownerInstance, void (TOwner::* callbackFunction)(TEvent& e));
-
-	template<typename TEvent, typename ...TArgs>
-	void EmitEvent(TArgs&& ...args);
+	template <typename TEvent, typename TOwner>
+	void SubscribeToEvents(TOwner* ownerInstance, void (TOwner::* CallbackFunction)(TEvent&));
+	
+	template <typename TEvent, typename ...TArgs>
+	void EmitEvents(TArgs&& ...args);
 
 private:
 	std::map<std::type_index, std::unique_ptr<HandlerList>> subscribers;
@@ -91,27 +92,27 @@ inline void EventCallback<TOwner, TEvent>::Call(Event& e)
 }
 
 template<typename TEvent, typename TOwner>
-inline void EventBus::SubscribeToEvent(TOwner* ownerInstance, void(TOwner::*callbackFunction)(TEvent& e))
+inline void EventBus::SubscribeToEvents(TOwner* ownerInstance, void(TOwner::* CallbackFunction)(TEvent&))
 {
 	if (!subscribers[typeid(TEvent)].get()) {
 		subscribers[typeid(TEvent)] = std::make_unique<HandlerList>();
 	}
 
-	auto subscriber = std::make_unique<EventCallback<TOwner, TEvent>>(ownerInstance, callbackFunction);
-	subscribers[typeid(TEvent)]->push_back(std::move(subscriber));
-
+	auto subscriber = std::make_unique<EventCallback<TOwner, TEvent>>(ownerInstance, CallbackFunction);
+	subscribers[typeid(TEvent)].get()->push_back(std::move(subscriber));
 }
 
 template<typename TEvent, typename ...TArgs>
-inline void EventBus::EmitEvent(TArgs&& ...args)
+inline void EventBus::EmitEvents(TArgs&& ...args)
 {
-	HandlerList* handlerList = subscribers.at(typeid(TEvent)).get();
-	if (!handlerList) {
+	HandlerList* subscribersList = subscribers[typeid(TEvent)].get();
+
+	if (! subscribersList) {
 		return;
 	}
 
 	TEvent event(std::forward<TArgs>(args)...);
-	for (auto handler_it = handlerList->begin(); handler_it != handlerList->end(); ++handler_it) {
-		handler_it->get()->Execute(event);
+	for (auto handlerIt = subscribersList->begin(); handlerIt != subscribersList->end(); ++handlerIt) {
+		(*handlerIt)->Execute(event);
 	}
 }
