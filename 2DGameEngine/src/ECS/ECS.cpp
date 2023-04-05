@@ -16,6 +16,7 @@ Entity::Entity(const unsigned the_id)
 void Entity::Kill()
 {
     registry->KillEntity(*this);
+    Logger::Log("Entity (" + std::to_string(id) + ") got destroyed.");
 }
 
 void System::AddEntityToSystem(const Entity entity)

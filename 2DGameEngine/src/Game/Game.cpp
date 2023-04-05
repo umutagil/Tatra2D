@@ -17,10 +17,12 @@
 #include "../Systems/CollisionSystem.h"
 #include "../Systems/DamageSystem.h"
 #include "../Systems/DebugRenderSystem.h"
+#include "../Systems/KeyboardMovementSystem.h"
 
 #include "../AssetStore/AssetStore.h"
 
 #include "../EventBus/EventBus.h"
+#include "../Events/KeyPressedEvent.h"
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -117,13 +119,18 @@ void Game::ProcessInput()
 			case SDL_QUIT:
 				isRunning = false;
 				break;
-			case SDL_KEYDOWN:
+			case SDL_KEYDOWN: {
 				if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
 					isRunning = false;
 				}
 				else if (sdlEvent.key.keysym.sym == SDLK_d) {
 					isDebugModeOn = !isDebugModeOn;
 				}
+
+				KeyPressedEvent keyEvent(sdlEvent.key.keysym.sym);
+				eventBus->EmitEvents<KeyPressedEvent>(keyEvent);
+			}
+
 				break;
 			default:
 				break;
@@ -153,6 +160,7 @@ void Game::Update()
 
 	// Subscribe to events
 	registry->GetSystem<DamageSystem>().SubscribeToEvents(*eventBus);
+	registry->GetSystem<KeyboardMovementSystem>().SubscribeToEvents(*eventBus);
 
 	// Update the registry to process pending entities
 	registry->Update();
@@ -193,6 +201,7 @@ void Game::LoadLevel(const unsigned level)
 	registry->AddSystem<AnimationSystem>();
 	registry->AddSystem<CollisionSystem>();
 	registry->AddSystem<DamageSystem>();
+	registry->AddSystem<KeyboardMovementSystem>();
 
 	// Add assets to asset store
 	assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");

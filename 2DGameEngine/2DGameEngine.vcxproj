@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\Pikuma\2DGameEngine\2DGameEngine\libs;D:\SDL2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Pikuma\2DGameEngine\2DGameEngine\libs\lua;D:\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\TatraEngine\2DGameEngine\2DGameEngine\libs;D:\SDL2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\TatraEngine\2DGameEngine\2DGameEngine\libs\lua;D:\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -139,11 +139,13 @@
     <ClInclude Include="src\EventBus\Event.h" />
     <ClInclude Include="src\EventBus\EventBus.h" />
     <ClInclude Include="src\Events\CollisionEvent.h" />
+    <ClInclude Include="src\Events\KeyPressedEvent.h" />
     <ClInclude Include="src\Math\Intersection.h" />
     <ClInclude Include="src\Systems\AnimationSystem.h" />
     <ClInclude Include="src\Systems\CollisionSystem.h" />
     <ClInclude Include="src\Systems\DamageSystem.h" />
     <ClInclude Include="src\Systems\DebugRenderSystem.h" />
+    <ClInclude Include="src\Systems\KeyboardMovementSystem.h" />
     <ClInclude Include="src\Systems\RenderSystem.h" />
     <ClInclude Include="src\Components\RigidBodyComponent.h" />
     <ClInclude Include="src\ECS\ECS.h" />
@@ -551,6 +553,7 @@
     <ClCompile Include="src\Systems\CollisionSystem.cpp" />
     <ClCompile Include="src\Systems\DamageSystem.cpp" />
     <ClCompile Include="src\Systems\DebugRenderSystem.cpp" />
+    <ClCompile Include="src\Systems\KeyboardMovementSystem.cpp" />
     <ClCompile Include="src\Systems\RenderSystem.cpp" />
     <ClCompile Include="src\Components\RigidBodyComponent.cpp" />
     <ClCompile Include="src\Components\TransformComponent.cpp" />
