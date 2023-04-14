@@ -20,35 +20,21 @@ private:
 	virtual void Call(Event& e) = 0;
 };
 
-template<typename TOwner, typename TEvent>
+
+template<typename TEvent>
 class EventCallback : public IEventCallback
 {
 public:
-	typedef void (TOwner::* CallbackFunction)(TEvent&);
+	using CallBackFunction_t = std::function<void(TEvent&)>;
 
-	EventCallback(TOwner* ownerInstance, CallbackFunction callbackFucntion);
-
-	virtual void Call(Event& e) override;
-
-private:
-
-	TOwner* ownerInstance;
-	CallbackFunction callbackFunction;
-};
-
-template<typename TOwner, typename TEvent>
-class MyEventCallback : public IEventCallback
-{
-public:
-	typedef void (TOwner::* CallbackFunction)(TEvent&);
-
-	MyEventCallback(TOwner* ownerInstance, CallbackFunction callbackFucntion);
+	template<typename T>
+	EventCallback(T&& callbackFunction) : callbackFunction(std::forward<T>(callbackFunction)) { }
 
 	virtual void Call(Event& e) override;
 
 private:
 
-	std::function<void(const TOwner&, TEvent&)> callbackFunction;
+	CallBackFunction_t callbackFunction;
 };
 
 
@@ -78,18 +64,6 @@ void IEventCallback::Execute(Event& e)
 	Call(e);
 }
 
-template<typename TOwner, typename TEvent>
-inline EventCallback<TOwner, TEvent>::EventCallback(TOwner* ownerInstance, CallbackFunction callbackFunction)
-	: ownerInstance(ownerInstance)
-	, callbackFunction(callbackFunction)
-{
-}
-
-template<typename TOwner, typename TEvent>
-inline void EventCallback<TOwner, TEvent>::Call(Event& e)
-{
-	std::invoke(callbackFunction, ownerInstance, static_cast<TEvent&>(e));
-}
 
 template<typename TEvent, typename TOwner>
 inline void EventBus::SubscribeToEvents(TOwner* ownerInstance, void(TOwner::* CallbackFunction)(TEvent&))
@@ -98,9 +72,12 @@ inline void EventBus::SubscribeToEvents(TOwner* ownerInstance, void(TOwner::* Ca
 		subscribers[typeid(TEvent)] = std::make_unique<HandlerList>();
 	}
 
-	auto subscriber = std::make_unique<EventCallback<TOwner, TEvent>>(ownerInstance, CallbackFunction);
+	std::function<void(TEvent&)> callback_fn = std::bind(CallbackFunction, ownerInstance, std::placeholders::_1);
+	auto subscriber = std::make_unique<EventCallback<TEvent>>(callback_fn);
+
 	subscribers[typeid(TEvent)].get()->push_back(std::move(subscriber));
 }
+
 
 template<typename TEvent, typename ...TArgs>
 inline void EventBus::EmitEvents(TArgs&& ...args)
@@ -114,5 +91,13 @@ inline void EventBus::EmitEvents(TArgs&& ...args)
 	TEvent event(std::forward<TArgs>(args)...);
 	for (auto handlerIt = subscribersList->begin(); handlerIt != subscribersList->end(); ++handlerIt) {
 		(*handlerIt)->Execute(event);
+	}
+}
+
+template<typename TEvent>
+inline void EventCallback<TEvent>::Call(Event& e)
+{
+	if (callbackFunction) {
+		callbackFunction(static_cast<TEvent&>(e));
 	}
 }
