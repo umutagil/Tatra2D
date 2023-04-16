@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClInclude Include="src\AssetStore\AssetStore.h" />
     <ClInclude Include="src\Components\AnimationComponent.h" />
+    <ClInclude Include="src\Components\CameraFollowComponent.h" />
     <ClInclude Include="src\Components\KeyboardControlComponent.h" />
     <ClInclude Include="src\Components\SpriteComponent.h" />
     <ClInclude Include="src\EventBus\Event.h" />
@@ -143,6 +144,7 @@
     <ClInclude Include="src\Events\KeyPressedEvent.h" />
     <ClInclude Include="src\Math\Intersection.h" />
     <ClInclude Include="src\Systems\AnimationSystem.h" />
+    <ClInclude Include="src\Systems\CameraMovementSystem.h" />
     <ClInclude Include="src\Systems\CollisionSystem.h" />
     <ClInclude Include="src\Systems\DamageSystem.h" />
     <ClInclude Include="src\Systems\DebugRenderSystem.h" />
@@ -552,6 +554,7 @@
     <ClCompile Include="src\Components\SpriteComponent.cpp" />
     <ClCompile Include="src\EventBus\EventBus.cpp" />
     <ClCompile Include="src\Systems\AnimationSystem.cpp" />
+    <ClCompile Include="src\Systems\CameraMovementSystem.cpp" />
     <ClCompile Include="src\Systems\CollisionSystem.cpp" />
     <ClCompile Include="src\Systems\DamageSystem.cpp" />
     <ClCompile Include="src\Systems\DebugRenderSystem.cpp" />

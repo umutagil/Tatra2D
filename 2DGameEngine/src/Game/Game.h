@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <memory>
 
+#include <SDL_rect.h>
+
 #include "../ECS/ECS.h"
 
 const unsigned FPS = 120;
@@ -32,6 +34,13 @@ public:
 private:
 	void LoadLevel(const unsigned level);
 	void LoadTileMap();
+	void InitializeCamera();
+
+public:
+	static int windowWidth;
+	static int windowHeight;
+	static int mapWidth;
+	static int mapHeight;
 
 private:
 	
@@ -40,9 +49,7 @@ private:
 
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-
-	int windowWidth;
-	int windowHeight;
+	SDL_Rect camera;
 
 	std::unique_ptr<Registry> registry;
 	std::unique_ptr<AssetStore> assetStore;

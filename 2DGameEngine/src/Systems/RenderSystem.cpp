@@ -13,7 +13,7 @@ RenderSystem::RenderSystem()
 	RequireComponent<SpriteComponent>();
 }
 
-void RenderSystem::Update(SDL_Renderer* renderer, std::unique_ptr<AssetStore>& assetStore)
+void RenderSystem::Update(SDL_Renderer* renderer, std::unique_ptr<AssetStore>& assetStore, SDL_Rect& camera)
 {
 	// Sort the entities according to zIndex
 	std::vector<Entity> entitiesSorted(GetSystemEntities());
@@ -25,11 +25,14 @@ void RenderSystem::Update(SDL_Renderer* renderer, std::unique_ptr<AssetStore>& a
 		const TransformComponent& transform = entity.GetComponent<TransformComponent>();
 		const SpriteComponent& sprite = entity.GetComponent<SpriteComponent>();
 
+		const int entityPosX = static_cast<int>(transform.position.x) - (sprite.isFixed ? 0 : camera.x);
+		const int entityPosY = static_cast<int>(transform.position.y) - (sprite.isFixed ? 0 : camera.y);
+
 		const SDL_Rect destRect = {
-			static_cast<int>(transform.position.x),
-			static_cast<int>(transform.position.y),
-			static_cast<int>(sprite.width * transform.scale.x),
-			static_cast<int>(sprite.height * transform.scale.y)
+			entityPosX,
+			entityPosY,
+			static_cast<int>(sprite.width) * transform.scale.x,
+			static_cast<int>(sprite.height) * transform.scale.y
 		};
 
 		SDL_RenderCopyEx(

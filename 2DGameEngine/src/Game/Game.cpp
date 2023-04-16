@@ -11,6 +11,7 @@
 #include "../Components/AnimationComponent.h"
 #include "../Components/BoxColliderComponent.h"
 #include "../Components/KeyboardControlComponent.h"
+#include "../Components/CameraFollowComponent.h"
 
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
@@ -19,6 +20,7 @@
 #include "../Systems/DamageSystem.h"
 #include "../Systems/DebugRenderSystem.h"
 #include "../Systems/KeyboardControlSystem.h"
+#include "../Systems/CameraMovementSystem.h"
 
 #include "../AssetStore/AssetStore.h"
 
@@ -33,13 +35,17 @@
 #include <string>
 #include <sstream>
 
+int Game::windowWidth;
+int Game::windowHeight;
+int Game::mapWidth;
+int Game::mapHeight;
+
 Game::Game()
 	: isRunning(false)
 	, milisecsPreviousFrame(0)
 	, window(nullptr)
 	, renderer(nullptr)
-	, windowWidth(0)
-	, windowHeight(0)
+	, camera()
 	, registry()
 	, assetStore()
 	, eventBus()
@@ -95,7 +101,7 @@ void Game::Initialize()
 		return;
 	}
 
-	//SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+	InitializeCamera();
 
 	isRunning = true;
 }
@@ -169,6 +175,7 @@ void Game::Update()
 	registry->GetSystem<MovementSystem>().Update(deltaTimeSec);
 	registry->GetSystem<AnimationSystem>().Update(deltaTimeSec);
 	registry->GetSystem<CollisionSystem>().Update(*eventBus);
+	registry->GetSystem<CameraMovementSystem>().Update(camera);
 }
 
 void Game::Render()
@@ -176,9 +183,9 @@ void Game::Render()
 	SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
 	SDL_RenderClear(renderer);
 
-	registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
+	registry->GetSystem<RenderSystem>().Update(renderer, assetStore, camera);
 	if (isDebugModeOn) {
-		registry->GetSystem<DebugRenderSystem>().Update(renderer);
+		registry->GetSystem<DebugRenderSystem>().Update(renderer, camera);
 	}
 
 	// Render to screen
@@ -202,6 +209,7 @@ void Game::LoadLevel(const unsigned level)
 	registry->AddSystem<CollisionSystem>();
 	registry->AddSystem<DamageSystem>();
 	registry->AddSystem<KeyboardControlSystem>();
+	registry->AddSystem<CameraMovementSystem>();
 
 	// Add assets to asset store
 	assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
@@ -218,14 +226,9 @@ void Game::LoadLevel(const unsigned level)
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 3);
 	chopper.AddComponent<AnimationComponent>(2, 15);
-
-	Entity radar = registry->CreateEntity();
-	radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74.0f, 10.0f), glm::vec2(1.0f, 1.0f), 0.0f);
-	radar.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
-	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 5);
-	radar.AddComponent<AnimationComponent>(8, 5);
 	const float chopperSpeed = 50.0f;
 	chopper.AddComponent<KeyboardControlledComponent>(glm::vec2(0.0f, -chopperSpeed), glm::vec2(chopperSpeed, 0.0f), glm::vec2(0.0f, chopperSpeed), glm::vec2(-chopperSpeed, 0.0f));
+	chopper.AddComponent<CameraFollowComponent>();
 
 	Entity tank = registry->CreateEntity();
 	tank.AddComponent<TransformComponent>(glm::vec2(10.0f, 10.0f), glm::vec2(1.0f, 1.0f), 0.0f);
@@ -238,6 +241,12 @@ void Game::LoadLevel(const unsigned level)
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(-50.0f, 0.0f));
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);
 	truck.AddComponent<BoxColliderComponent>(32, 32);
+	// Add UI entities
+	Entity radar = registry->CreateEntity();
+	radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74.0f, 10.0f), glm::vec2(1.0f, 1.0f), 0.0f);
+	radar.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
+	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 5, true /* isFixed */);
+	radar.AddComponent<AnimationComponent>(8, 5);
 }
 
 void Game::LoadTileMap()
@@ -253,7 +262,9 @@ void Game::LoadTileMap()
 		while (tileMapFile) {
 			std::string line;
 			std::getline(tileMapFile, line);
-			indexStringLines.push_back(line);
+			if (!line.empty()) {
+				indexStringLines.push_back(line);
+			}
 		}
 	}
 
@@ -274,7 +285,7 @@ void Game::LoadTileMap()
 	int textureWidth, textureHeight;
 	SDL_QueryTexture(mapTexture, nullptr, nullptr, &textureWidth, &textureHeight);
 	const int tileSize = 32;
-	const float tileScale = 1.5f;
+	const float tileScale = 2.0f;
 	const int numTilesInTextureRow = textureWidth / tileSize;
 	const int zIndex = 0;
 	
@@ -290,9 +301,20 @@ void Game::LoadTileMap()
 			const unsigned row = tileIdx / numTilesInTextureRow;
 			const int srcRectX = tileSize * column;
 			const int srcRectY = tileSize * row;
-			tile.AddComponent<SpriteComponent>("tilemap-image", tileSize, tileSize, zIndex, srcRectX, srcRectY);
+			tile.AddComponent<SpriteComponent>("tilemap-image", tileSize, tileSize, zIndex, false, srcRectX, srcRectY);
 		}
 	}
+
+	mapWidth = tileMapIndices[0].size() * tileSize * tileScale;
+	mapHeight = tileMapIndices.size() * tileSize * tileScale;
+}
+
+void Game::InitializeCamera()
+{
+	camera.x = 0;
+	camera.y = 0;
+	camera.w = windowWidth;
+	camera.h = windowHeight;
 }
 
 #endif // !GAME_H
