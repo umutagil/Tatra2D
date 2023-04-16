@@ -12,6 +12,7 @@
 #include "../Components/BoxColliderComponent.h"
 #include "../Components/KeyboardControlComponent.h"
 #include "../Components/CameraFollowComponent.h"
+#include "../Components/ProjectileEmitterComponent.h"
 
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
@@ -21,6 +22,8 @@
 #include "../Systems/DebugRenderSystem.h"
 #include "../Systems/KeyboardControlSystem.h"
 #include "../Systems/CameraMovementSystem.h"
+#include "../Systems/ProjectileEmitSystem.h"
+#include "../Systems/ProjectileLifeCycleSystem.h"
 
 #include "../AssetStore/AssetStore.h"
 
@@ -167,6 +170,7 @@ void Game::Update()
 	// Subscribe to events
 	registry->GetSystem<DamageSystem>().SubscribeToEvents(*eventBus);
 	registry->GetSystem<KeyboardControlSystem>().SubscribeToEvents(*eventBus);
+	registry->GetSystem<ProjectileEmitSystem>().SubscribeToEvents(*eventBus);
 
 	// Update the registry to process pending entities
 	registry->Update();
@@ -176,6 +180,8 @@ void Game::Update()
 	registry->GetSystem<AnimationSystem>().Update(deltaTimeSec);
 	registry->GetSystem<CollisionSystem>().Update(*eventBus);
 	registry->GetSystem<CameraMovementSystem>().Update(camera);
+	registry->GetSystem<ProjectileEmitSystem>().Update(registry);
+	registry->GetSystem<ProjectileLifeCycleSystem>().Update();
 }
 
 void Game::Render()
@@ -210,11 +216,14 @@ void Game::LoadLevel(const unsigned level)
 	registry->AddSystem<DamageSystem>();
 	registry->AddSystem<KeyboardControlSystem>();
 	registry->AddSystem<CameraMovementSystem>();
+	registry->AddSystem<ProjectileEmitSystem>();
+	registry->AddSystem<ProjectileLifeCycleSystem>();
 
 	// Add assets to asset store
 	assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
 	assetStore->AddTexture(renderer, "truck-image", "./assets/images/truck-ford-right.png");
 	assetStore->AddTexture(renderer, "chopper-image", "./assets/images/chopper-spritesheet.png");
+	assetStore->AddTexture(renderer, "bullet-image", "./assets/images/bullet.png");
 	assetStore->AddTexture(renderer, "radar-image", "./assets/images/radar.png");
 
 	// Load the tilemap
@@ -226,21 +235,26 @@ void Game::LoadLevel(const unsigned level)
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 3);
 	chopper.AddComponent<AnimationComponent>(2, 15);
+	chopper.AddComponent<BoxColliderComponent>(32, 32);
 	const float chopperSpeed = 50.0f;
 	chopper.AddComponent<KeyboardControlledComponent>(glm::vec2(0.0f, -chopperSpeed), glm::vec2(chopperSpeed, 0.0f), glm::vec2(0.0f, chopperSpeed), glm::vec2(-chopperSpeed, 0.0f));
 	chopper.AddComponent<CameraFollowComponent>();
+	chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(200.0f, 200.0f), 500, 10000, 0, true);
 
 	Entity tank = registry->CreateEntity();
-	tank.AddComponent<TransformComponent>(glm::vec2(10.0f, 10.0f), glm::vec2(1.0f, 1.0f), 0.0f);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(50.0f, 0.0f));
+	tank.AddComponent<TransformComponent>(glm::vec2(200.0f, 220.0f), glm::vec2(1.0f, 1.0f), 0.0f);
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
 	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);
 	tank.AddComponent<BoxColliderComponent>(32, 32);
+	tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100.0f, 0.0f), 5000, 5000, 0, false);
 
 	Entity truck = registry->CreateEntity();
-	truck.AddComponent<TransformComponent>(glm::vec2(800.0f, 10.0f), glm::vec2(1.0f, 1.0f), 0.0f);
-	truck.AddComponent<RigidBodyComponent>(glm::vec2(-50.0f, 0.0f));
+	truck.AddComponent<TransformComponent>(glm::vec2(800.0f, 500.0f), glm::vec2(1.0f, 1.0f), 0.0f);
+	truck.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);
 	truck.AddComponent<BoxColliderComponent>(32, 32);
+	truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0f, -100.0f), 2000, 5000, 0, false);
+
 	// Add UI entities
 	Entity radar = registry->CreateEntity();
 	radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74.0f, 10.0f), glm::vec2(1.0f, 1.0f), 0.0f);

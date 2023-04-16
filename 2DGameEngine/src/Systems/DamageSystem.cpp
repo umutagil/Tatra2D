@@ -19,6 +19,6 @@ void DamageSystem::SubscribeToEvents(EventBus& eventBus)
 void DamageSystem::OnCollisionHappened(CollisionEvent& event)
 {
 	Logger::Log("Damage system received collision. Entities (" + std::to_string(event.a.GetId()) + ", " + std::to_string(event.b.GetId()) + ")");
-	event.a.Kill();
-	event.b.Kill();
+	//event.a.Kill();
+	//event.b.Kill();
 }

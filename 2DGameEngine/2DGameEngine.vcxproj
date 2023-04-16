@@ -137,6 +137,8 @@
     <ClInclude Include="src\Components\AnimationComponent.h" />
     <ClInclude Include="src\Components\CameraFollowComponent.h" />
     <ClInclude Include="src\Components\KeyboardControlComponent.h" />
+    <ClInclude Include="src\Components\ProjectileComponent.h" />
+    <ClInclude Include="src\Components\ProjectileEmitterComponent.h" />
     <ClInclude Include="src\Components\SpriteComponent.h" />
     <ClInclude Include="src\EventBus\Event.h" />
     <ClInclude Include="src\EventBus\EventBus.h" />
@@ -149,6 +151,8 @@
     <ClInclude Include="src\Systems\DamageSystem.h" />
     <ClInclude Include="src\Systems\DebugRenderSystem.h" />
     <ClInclude Include="src\Systems\KeyboardControlSystem.h" />
+    <ClInclude Include="src\Systems\ProjectileEmitSystem.h" />
+    <ClInclude Include="src\Systems\ProjectileLifeCycleSystem.h" />
     <ClInclude Include="src\Systems\RenderSystem.h" />
     <ClInclude Include="src\Components\RigidBodyComponent.h" />
     <ClInclude Include="src\ECS\ECS.h" />
@@ -551,6 +555,8 @@
     <ClCompile Include="src\Components\BoxColliderComponent.cpp" />
     <ClCompile Include="src\Components\BoxColliderComponent.h" />
     <ClCompile Include="src\Components\KeyboardControlComponent.cpp" />
+    <ClCompile Include="src\Components\ProjectileComponent.cpp" />
+    <ClCompile Include="src\Components\ProjectileEmitterComponent.cpp" />
     <ClCompile Include="src\Components\SpriteComponent.cpp" />
     <ClCompile Include="src\EventBus\EventBus.cpp" />
     <ClCompile Include="src\Systems\AnimationSystem.cpp" />
@@ -559,6 +565,8 @@
     <ClCompile Include="src\Systems\DamageSystem.cpp" />
     <ClCompile Include="src\Systems\DebugRenderSystem.cpp" />
     <ClCompile Include="src\Systems\KeyboardControlSystem.cpp" />
+    <ClCompile Include="src\Systems\ProjectileEmitSystem.cpp" />
+    <ClCompile Include="src\Systems\ProjectileLifeCycleSystem.cpp" />
     <ClCompile Include="src\Systems\RenderSystem.cpp" />
     <ClCompile Include="src\Components\RigidBodyComponent.cpp" />
     <ClCompile Include="src\Components\TransformComponent.cpp" />
