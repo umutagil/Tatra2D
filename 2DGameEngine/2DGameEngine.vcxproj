@@ -136,6 +136,7 @@
     <ClInclude Include="src\AssetStore\AssetStore.h" />
     <ClInclude Include="src\Components\AnimationComponent.h" />
     <ClInclude Include="src\Components\CameraFollowComponent.h" />
+    <ClInclude Include="src\Components\HealthComponent.h" />
     <ClInclude Include="src\Components\KeyboardControlComponent.h" />
     <ClInclude Include="src\Components\ProjectileComponent.h" />
     <ClInclude Include="src\Components\ProjectileEmitterComponent.h" />
@@ -554,6 +555,7 @@
     <ClCompile Include="src\Components\AnimationComponent.cpp" />
     <ClCompile Include="src\Components\BoxColliderComponent.cpp" />
     <ClCompile Include="src\Components\BoxColliderComponent.h" />
+    <ClCompile Include="src\Components\HealthComponent.cpp" />
     <ClCompile Include="src\Components\KeyboardControlComponent.cpp" />
     <ClCompile Include="src\Components\ProjectileComponent.cpp" />
     <ClCompile Include="src\Components\ProjectileEmitterComponent.cpp" />

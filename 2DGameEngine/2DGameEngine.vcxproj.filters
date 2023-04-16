@@ -852,6 +852,9 @@
     <ClInclude Include="src\Systems\ProjectileEmitSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Components\HealthComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\Components\ProjectileComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1343,6 +1346,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Systems\ProjectileEmitSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\HealthComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Components\ProjectileComponent.cpp">
