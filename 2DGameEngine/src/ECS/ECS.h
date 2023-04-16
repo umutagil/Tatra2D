@@ -7,10 +7,12 @@
 #include <set>
 #include <memory>
 #include <deque>
+#include <type_traits>
 
 #include "../Logger/Logger.h"
 
 class Registry;
+class System;
 
 const unsigned MAX_COMPONENTS = 32;
 
@@ -317,6 +319,7 @@ TSystem& Registry::GetSystem() const
 template<typename TComponent, typename ...TArgs>
 void Entity::AddComponent(TArgs&& ...args)
 {
+	static_assert(!std::is_base_of_v<System, TComponent>);
 	registry->AddComponent<TComponent>(*this, std::forward<TArgs>(args)...);
 }
 

@@ -63,6 +63,12 @@ void Registry::Update()
     entitiesToBeAdded.clear();
 }
 
+/**
+ * @brief Creates an entity and adds it to list of pending entities.
+ * 
+ * In the next update these pending entities are added to systems which
+ * are interested in those entities.
+ */
 Entity Registry::CreateEntity()
 {
     unsigned entityId;
@@ -86,11 +92,21 @@ Entity Registry::CreateEntity()
     return entity;
 }
 
+/**
+ * @brief Adds given entity in to-be-killed list.
+ * 
+ * @param entity.
+*/
 void Registry::KillEntity(const Entity entity)
 {
     entitiesToBeKilled.insert(entity);
 }
 
+/**
+ * @brief Adds given entity to the systems which are interested in it.
+ * 
+ * @param entity.
+ */
 void Registry::AddEntityToSystems(Entity entity)
 {   
     for (auto& system : systems) {
