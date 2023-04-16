@@ -1,13 +1,14 @@
 #pragma once
 
 #include "../ECS/ECS.h"
-#include "../EventBus/EventBus.h"
-#include "../Events/KeyPressedEvent.h"
 
-class KeyboardMovementSystem : public System
+class EventBus;
+class KeyPressedEvent;
+
+class KeyboardControlSystem : public System
 {
 public:
-	KeyboardMovementSystem();
+	KeyboardControlSystem();
 
 	void SubscribeToEvents(EventBus& eventBus);
 

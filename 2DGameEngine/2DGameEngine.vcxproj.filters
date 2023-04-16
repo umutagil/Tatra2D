@@ -831,10 +831,13 @@
     <ClInclude Include="src\Systems\DamageSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Systems\KeyboardMovementSystem.h">
+    <ClInclude Include="src\Systems\KeyboardControlSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Events\KeyPressedEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\KeyboardControlComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1309,7 +1312,12 @@
     <ClCompile Include="src\Systems\DamageSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Systems\KeyboardMovementSystem.cpp">
+    <ClCompile Include="src\Systems\KeyboardControlSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\KeyboardControlComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

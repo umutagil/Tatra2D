@@ -10,6 +10,7 @@
 #include "../Components/SpriteComponent.h"
 #include "../Components/AnimationComponent.h"
 #include "../Components/BoxColliderComponent.h"
+#include "../Components/KeyboardControlComponent.h"
 
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
@@ -17,7 +18,7 @@
 #include "../Systems/CollisionSystem.h"
 #include "../Systems/DamageSystem.h"
 #include "../Systems/DebugRenderSystem.h"
-#include "../Systems/KeyboardMovementSystem.h"
+#include "../Systems/KeyboardControlSystem.h"
 
 #include "../AssetStore/AssetStore.h"
 
@@ -127,8 +128,7 @@ void Game::ProcessInput()
 					isDebugModeOn = !isDebugModeOn;
 				}
 
-				KeyPressedEvent keyEvent(sdlEvent.key.keysym.sym);
-				eventBus->EmitEvents<KeyPressedEvent>(keyEvent);
+				eventBus->EmitEvents<KeyPressedEvent>(sdlEvent.key.keysym.sym);
 			}
 
 				break;
@@ -160,7 +160,7 @@ void Game::Update()
 
 	// Subscribe to events
 	registry->GetSystem<DamageSystem>().SubscribeToEvents(*eventBus);
-	registry->GetSystem<KeyboardMovementSystem>().SubscribeToEvents(*eventBus);
+	registry->GetSystem<KeyboardControlSystem>().SubscribeToEvents(*eventBus);
 
 	// Update the registry to process pending entities
 	registry->Update();
@@ -201,12 +201,12 @@ void Game::LoadLevel(const unsigned level)
 	registry->AddSystem<AnimationSystem>();
 	registry->AddSystem<CollisionSystem>();
 	registry->AddSystem<DamageSystem>();
-	registry->AddSystem<KeyboardMovementSystem>();
+	registry->AddSystem<KeyboardControlSystem>();
 
 	// Add assets to asset store
 	assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
 	assetStore->AddTexture(renderer, "truck-image", "./assets/images/truck-ford-right.png");
-	assetStore->AddTexture(renderer, "chopper-image", "./assets/images/chopper.png");
+	assetStore->AddTexture(renderer, "chopper-image", "./assets/images/chopper-spritesheet.png");
 	assetStore->AddTexture(renderer, "radar-image", "./assets/images/radar.png");
 
 	// Load the tilemap
@@ -215,7 +215,7 @@ void Game::LoadLevel(const unsigned level)
 	// Add entities
 	Entity chopper = registry->CreateEntity();
 	chopper.AddComponent<TransformComponent>(glm::vec2(10.0f, 100.0f), glm::vec2(1.0f, 1.0f), 0.0f);
-	chopper.AddComponent<RigidBodyComponent>(glm::vec2(50.0f, 0.0f));
+	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 3);
 	chopper.AddComponent<AnimationComponent>(2, 15);
 
@@ -224,6 +224,8 @@ void Game::LoadLevel(const unsigned level)
 	radar.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
 	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 5);
 	radar.AddComponent<AnimationComponent>(8, 5);
+	const float chopperSpeed = 50.0f;
+	chopper.AddComponent<KeyboardControlledComponent>(glm::vec2(0.0f, -chopperSpeed), glm::vec2(chopperSpeed, 0.0f), glm::vec2(0.0f, chopperSpeed), glm::vec2(-chopperSpeed, 0.0f));
 
 	Entity tank = registry->CreateEntity();
 	tank.AddComponent<TransformComponent>(glm::vec2(10.0f, 10.0f), glm::vec2(1.0f, 1.0f), 0.0f);
