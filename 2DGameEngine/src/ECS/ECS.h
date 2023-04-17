@@ -68,6 +68,12 @@ public:
 	template<typename TComponent, typename ...TArgs>
 	TComponent& GetComponent() const;
 
+	// Manage tags and groups
+	void Tag(const std::string& tag);
+	bool HasTag(const std::string& tag) const;
+	void Group(const std::string& group);
+	bool BelongsToGroup(const std::string& group) const;
+
 private:
 	unsigned id;
 
@@ -176,6 +182,18 @@ public:
 	template<typename TSystem>
 	TSystem& GetSystem() const;
 
+	// Tag management
+	void TagEntity(Entity entity, const std::string& tag);
+	void RemoveEntityTag(Entity entity);
+	bool EntityHasTag(const Entity entity, const std::string& tag) const;
+	Entity GetEntityByTag(const std::string& tag) const;
+
+	// Group management
+	void GroupEntity(Entity entity, const std::string& group);
+	void RemoveEntityGroup(Entity entity);
+	bool EntityBelongsToGroup(const Entity entity, const std::string& group) const;
+	std::vector<Entity> GetEntitiesByGroup(const std::string& group) const;
+
 private:
 	// Add and remove entities to/from systems.
 	void AddEntityToSystems(Entity entity);
@@ -209,6 +227,14 @@ private:
 
 	// @brief Map of all systems.
 	std::unordered_map<std::type_index, std::shared_ptr<System>> systems;
+
+	// Entity tags
+	std::unordered_map<std::string, unsigned> entityPerTag;
+	std::unordered_map<unsigned, std::string> tagPerEntity;
+
+	// Entity groups
+	std::unordered_map<std::string, std::set<Entity>> entitiesPerGroup;
+	std::unordered_map<unsigned, std::string> groupPerEntity;
 
 };
 

@@ -109,6 +109,7 @@ void ProjectileEmitSystem::OnKeyPressed(KeyPressedEvent& event)
 void ProjectileEmitSystem::CreateProjectile(const ProjectileInfo& info, std::unique_ptr<Registry>& registry)
 {
 	Entity projectile = registry->CreateEntity();
+	projectile.Tag("projectile");
 	projectile.AddComponent<TransformComponent>(info.position, info.scale);
 	projectile.AddComponent<RigidBodyComponent>(info.velocity);
 	projectile.AddComponent<ProjectileComponent>(info.hitDamage, info.durationMs, info.isFriendly);

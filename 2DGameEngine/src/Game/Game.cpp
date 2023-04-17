@@ -232,6 +232,7 @@ void Game::LoadLevel(const unsigned level)
 
 	// Add entities
 	Entity chopper = registry->CreateEntity();
+	chopper.Tag("player");
 	chopper.AddComponent<TransformComponent>(glm::vec2(10.0f, 100.0f), glm::vec2(1.0f, 1.0f), 0.0f);
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 3);
@@ -244,6 +245,7 @@ void Game::LoadLevel(const unsigned level)
 	chopper.AddComponent<HealthComponent>(100);
 
 	Entity tank = registry->CreateEntity();
+	tank.Tag("enemy");
 	tank.AddComponent<TransformComponent>(glm::vec2(200.0f, 220.0f), glm::vec2(1.0f, 1.0f), 0.0f);
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
 	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);
@@ -252,6 +254,7 @@ void Game::LoadLevel(const unsigned level)
 	chopper.AddComponent<HealthComponent>(80);
 
 	Entity truck = registry->CreateEntity();
+	truck.Tag("enemy");
 	truck.AddComponent<TransformComponent>(glm::vec2(800.0f, 500.0f), glm::vec2(1.0f, 1.0f), 0.0f);
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);
@@ -261,6 +264,7 @@ void Game::LoadLevel(const unsigned level)
 
 	// Add UI entities
 	Entity radar = registry->CreateEntity();
+	radar.Tag("ui");
 	radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74.0f, 10.0f), glm::vec2(1.0f, 1.0f), 0.0f);
 	radar.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
 	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 5, true /* isFixed */);
@@ -310,6 +314,7 @@ void Game::LoadTileMap()
 	for (size_t i = 0; i < tileMapIndices.size(); ++i) {
 		for (size_t j = 0; j < tileMapIndices[i].size(); ++j) {
 			Entity tile = registry->CreateEntity();
+			tile.Tag("tile");
 
 			const glm::vec2 tilePos(j * (tileSize * tileScale), i * (tileSize * tileScale));
 			tile.AddComponent<TransformComponent>(tilePos, glm::vec2(tileScale, tileScale), 0.0f);
