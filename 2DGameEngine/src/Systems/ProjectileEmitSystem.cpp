@@ -84,7 +84,7 @@ void ProjectileEmitSystem::OnKeyPressed(KeyPressedEvent& event)
 
 			for (Entity& entity : GetSystemEntities()) {
 
-				if (!entity.HasComponent<CameraFollowComponent>()) {
+				if (!entity.HasTag("player")) {
 					// Skip NPC entities.
 					continue;
 				}
