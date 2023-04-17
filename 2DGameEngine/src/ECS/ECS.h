@@ -15,6 +15,7 @@ class Registry;
 class System;
 
 const unsigned MAX_COMPONENTS = 32;
+const unsigned INVALID_ENTITY_ID = -1;
 
 // Bitset to keep track of which components an entity has.
 // Also used for the system to keep track of entities that are affected.
