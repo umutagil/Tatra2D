@@ -16,7 +16,7 @@ Entity::Entity(const unsigned the_id)
 void Entity::Kill()
 {
     registry->KillEntity(*this);
-    Logger::Log("Entity (" + std::to_string(id) + ") got destroyed.");
+    //Logger::Log("Entity (" + std::to_string(id) + ") got destroyed.");
 }
 
 void Entity::Tag(const std::string& tag)
@@ -111,7 +111,7 @@ Entity Registry::CreateEntity()
     entity.registry = this;
     entitiesToBeAdded.insert(entity);
 
-    Logger::Log("Entity created with ID: " + std::to_string(entityId));
+    //Logger::Log("Entity created with ID: " + std::to_string(entityId));
 
     return entity;
 }
