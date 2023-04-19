@@ -7,7 +7,7 @@ class ProjectileLifeCycleSystem : public System
 public:
 	ProjectileLifeCycleSystem();
 
-	void Update();
+	void Update(const float deltaTime);
 };
 
 

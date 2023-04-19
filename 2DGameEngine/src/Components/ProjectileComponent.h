@@ -4,12 +4,12 @@
 
 struct ProjectileComponent
 {
-	ProjectileComponent(const unsigned hitDamage = 0, const unsigned projectileDurationMs = 0, const bool isFriendly = false);
+	ProjectileComponent(const int hitDamage = 0, const unsigned projectileDurationS = 0.0f, const bool isFriendly = false);
 
-	unsigned hitDamage;
-	unsigned projectileDurationMs;
+	int hitDamage;
+	unsigned projectileDurationS;
 	bool isFriendly;
-	uint64_t startTime;
+	float lifeTime;
 };
 
 

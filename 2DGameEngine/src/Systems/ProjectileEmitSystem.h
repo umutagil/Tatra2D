@@ -13,17 +13,17 @@ struct ProjectileInfo
 		, scale(glm::vec2(1.0f, 1.0f))
 		, velocity(glm::vec2(0))
 		, hitDamage(0)
-		, durationMs(0)
+		, durationS(0)
 		, isFriendly(false)
 	{
 	}
 
-	ProjectileInfo(const glm::vec2& position, const glm::vec2& scale, const glm::vec2& velocity, const unsigned hitDamage, const unsigned durationMs, const bool isFriendly)
+	ProjectileInfo(const glm::vec2& position, const glm::vec2& scale, const glm::vec2& velocity, const int hitDamage, const float durationS, const bool isFriendly)
 		: position(position)
 		, scale(scale)
 		, velocity(velocity)
 		, hitDamage(hitDamage)
-		, durationMs(durationMs)
+		, durationS(durationS)
 		, isFriendly(isFriendly)
 	{
 	}
@@ -31,8 +31,8 @@ struct ProjectileInfo
 	glm::vec2 position;
 	glm::vec2 scale;
 	glm::vec2 velocity;
-	unsigned hitDamage;
-	unsigned durationMs;
+	int hitDamage;
+	float durationS;
 	bool isFriendly;
 };
 
@@ -42,7 +42,7 @@ class ProjectileEmitSystem : public System
 public:
 	ProjectileEmitSystem();
 
-	void Update(std::unique_ptr<Registry>& registry);
+	void Update(std::unique_ptr<Registry>& registry, const float deltaTime);
 
 	void SubscribeToEvents(EventBus& eventBus);
 

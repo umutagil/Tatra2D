@@ -2,10 +2,10 @@
 
 #include <SDL.h>
 
-ProjectileComponent::ProjectileComponent(const unsigned hitDamage, const unsigned projectileDurationMs, const bool isFriendly)
+ProjectileComponent::ProjectileComponent(const int hitDamage, const unsigned projectileDurationS, const bool isFriendly)
 	: hitDamage(hitDamage)
-	, projectileDurationMs(projectileDurationMs)
+	, projectileDurationS(projectileDurationS)
 	, isFriendly(isFriendly)
-	, startTime(SDL_GetTicks64())
+	, lifeTime(projectileDurationS)
 {
 }

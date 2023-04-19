@@ -24,16 +24,16 @@ ProjectileEmitSystem::ProjectileEmitSystem()
 }
 
 // TODO: Maybe find a cleaner way than sending registry as parameter.
-void ProjectileEmitSystem::Update(std::unique_ptr<Registry>& registry)
+void ProjectileEmitSystem::Update(std::unique_ptr<Registry>& registry, const float deltaTime)
 {
- 	const uint64_t currentTime = SDL_GetTicks64();
-
 	for (Entity& entity : GetSystemEntities()) {
 
 		const TransformComponent& transform = entity.GetComponent<TransformComponent>();
 		ProjectileEmitterComponent& projectileEmitter = entity.GetComponent<ProjectileEmitterComponent>();
-		const bool canFire = (currentTime - projectileEmitter.lastEmissiontime) > projectileEmitter.repeatFrequencyMs;
-
+		if (projectileEmitter.cooldownTime > 0.0f) {
+			projectileEmitter.cooldownTime -= deltaTime;
+		}
+		const bool canFire = (projectileEmitter.cooldownTime <= 0.0f);
 		if (!canFire) {
 			continue;
 		}
@@ -63,10 +63,10 @@ void ProjectileEmitSystem::Update(std::unique_ptr<Registry>& registry)
 		}
 
 		const ProjectileInfo projectileInfo(projectilePos, glm::vec2(1.0f, 1.0f), projectileVelocity,
-										projectileEmitter.hitDamage, projectileEmitter.projectileDurationMs, projectileEmitter.isFriendly);
+										projectileEmitter.hitDamage, projectileEmitter.projectileDurationS, projectileEmitter.isFriendly);
 
 		CreateProjectile(projectileInfo, registry);
-		projectileEmitter.lastEmissiontime = currentTime;
+		projectileEmitter.cooldownTime = projectileEmitter.repeatFrequencyS;
 	}
 }
 
@@ -80,8 +80,7 @@ void ProjectileEmitSystem::OnKeyPressed(KeyPressedEvent& event)
 	switch (event.key) {
 
 		case SDLK_SPACE: {
-			const uint64_t currentTime = SDL_GetTicks64();
-
+			
 			for (Entity& entity : GetSystemEntities()) {
 
 				if (!entity.HasTag("player")) {
@@ -90,12 +89,9 @@ void ProjectileEmitSystem::OnKeyPressed(KeyPressedEvent& event)
 				}
 
 				ProjectileEmitterComponent& projectileEmitter = entity.GetComponent<ProjectileEmitterComponent>();
-				const bool canFire = (currentTime - projectileEmitter.lastEmissiontime) > projectileEmitter.repeatFrequencyMs;
-				if (!canFire) {
-					break;
-				}
+				const bool canFire = (projectileEmitter.cooldownTime <= 0);
+				pendingPlayerProjectile = canFire;
 
-				pendingPlayerProjectile = true;
 				break;
 			}
 			break;
@@ -109,10 +105,10 @@ void ProjectileEmitSystem::OnKeyPressed(KeyPressedEvent& event)
 void ProjectileEmitSystem::CreateProjectile(const ProjectileInfo& info, std::unique_ptr<Registry>& registry)
 {
 	Entity projectile = registry->CreateEntity();
-	projectile.Tag("projectile");
+	projectile.Group("projectiles");
 	projectile.AddComponent<TransformComponent>(info.position, info.scale);
 	projectile.AddComponent<RigidBodyComponent>(info.velocity);
-	projectile.AddComponent<ProjectileComponent>(info.hitDamage, info.durationMs, info.isFriendly);
+	projectile.AddComponent<ProjectileComponent>(info.hitDamage, info.durationS, info.isFriendly);
 	projectile.AddComponent<SpriteComponent>("bullet-image", 4, 4, 4 /* zIndex */);
 	projectile.AddComponent<BoxColliderComponent>(4, 4);
 }

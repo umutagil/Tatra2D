@@ -185,8 +185,8 @@ void Game::Update()
 	registry->GetSystem<AnimationSystem>().Update(deltaTimeSec);
 	registry->GetSystem<CollisionSystem>().Update(*eventBus);
 	registry->GetSystem<CameraMovementSystem>().Update(camera);
-	registry->GetSystem<ProjectileEmitSystem>().Update(registry);
-	registry->GetSystem<ProjectileLifeCycleSystem>().Update();
+	registry->GetSystem<ProjectileEmitSystem>().Update(registry, deltaTimeSec);
+	registry->GetSystem<ProjectileLifeCycleSystem>().Update(deltaTimeSec);
 }
 
 void Game::Render()
@@ -236,16 +236,16 @@ void Game::LoadLevel(const unsigned level)
 
 	// Add entities
 	Entity chopper = registry->CreateEntity();
+	const float chopperSpeed = 150.0f;
 	chopper.Tag("player");
-	chopper.AddComponent<TransformComponent>(glm::vec2(10.0f, 100.0f), glm::vec2(1.0f, 1.0f), 0.0f);
-	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
+	chopper.AddComponent<TransformComponent>(glm::vec2(10.0f, 300.0f), glm::vec2(1.0f, 1.0f), 0.0f);
+	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, -chopperSpeed));
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 3);
 	chopper.AddComponent<AnimationComponent>(2, 15);
 	chopper.AddComponent<BoxColliderComponent>(32, 32);
-	const float chopperSpeed = 50.0f;
 	chopper.AddComponent<KeyboardControlledComponent>(glm::vec2(0.0f, -chopperSpeed), glm::vec2(chopperSpeed, 0.0f), glm::vec2(0.0f, chopperSpeed), glm::vec2(-chopperSpeed, 0.0f));
 	chopper.AddComponent<CameraFollowComponent>();
-	chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(200.0f, 200.0f), 500, 10000, 0, true);
+	chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(200.0f, 200.0f), 0.1f, 10.0f, 10, true);
 	chopper.AddComponent<HealthComponent>(100);
 
 	Entity tank = registry->CreateEntity();
@@ -254,8 +254,8 @@ void Game::LoadLevel(const unsigned level)
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
 	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);
 	tank.AddComponent<BoxColliderComponent>(32, 32);
-	tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100.0f, 0.0f), 5000, 5000, 0, false);
-	chopper.AddComponent<HealthComponent>(80);
+	tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100.0f, 0.0f), 1.0f, 5.0f, 10, false);
+	tank.AddComponent<HealthComponent>(80);
 
 	Entity truck = registry->CreateEntity();
 	truck.Group("enemies");
@@ -263,8 +263,8 @@ void Game::LoadLevel(const unsigned level)
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);
 	truck.AddComponent<BoxColliderComponent>(32, 32);
-	truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0f, -100.0f), 2000, 5000, 0, false);
-	chopper.AddComponent<HealthComponent>(40);
+	truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0f, -100.0f), 2.0f, 5.0f, 10, false);
+	truck.AddComponent<HealthComponent>(40);
 
 	// Add UI entities
 	Entity radar = registry->CreateEntity();

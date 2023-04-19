@@ -1,7 +1,5 @@
 #include "ProjectileLifeCycleSystem.h"
 
-#include <SDL.h>
-
 #include "../Components/ProjectileComponent.h"
 
 ProjectileLifeCycleSystem::ProjectileLifeCycleSystem()
@@ -9,14 +7,12 @@ ProjectileLifeCycleSystem::ProjectileLifeCycleSystem()
 	RequireComponent<ProjectileComponent>();
 }
 
-void ProjectileLifeCycleSystem::Update()
+void ProjectileLifeCycleSystem::Update(const float deltaTime)
 {
-	const uint64_t currentTime = SDL_GetTicks64();
-
 	for (Entity entity : GetSystemEntities()) {
 		ProjectileComponent& projectile = entity.GetComponent<ProjectileComponent>();
-
-		if (currentTime - projectile.startTime > projectile.projectileDurationMs) {
+		projectile.lifeTime -= deltaTime;
+		if (projectile.lifeTime <= 0) {
 			entity.Kill();
 		}
 	}

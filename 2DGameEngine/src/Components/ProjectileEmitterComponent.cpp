@@ -2,13 +2,13 @@
 
 #include <SDL.h>
 
-ProjectileEmitterComponent::ProjectileEmitterComponent(const glm::vec2 projectileVelocity, const unsigned repeatFrequencyMs, const unsigned projectileDurationMs,
-														const unsigned hitDamage, const bool isFriendly)
+ProjectileEmitterComponent::ProjectileEmitterComponent(const glm::vec2 projectileVelocity, const float repeatFrequencyS, const float projectileDurationS,
+														const int hitDamage, const bool isFriendly)
 	: projectileVelocity(projectileVelocity)
-	, repeatFrequencyMs(repeatFrequencyMs)
-	, projectileDurationMs(projectileDurationMs)
+	, repeatFrequencyS(repeatFrequencyS)
+	, projectileDurationS(projectileDurationS)
 	, hitDamage(hitDamage)
-	, lastEmissiontime(SDL_GetTicks64())
+	, cooldownTime(0)
 	, isFriendly(isFriendly)
 {
 }
