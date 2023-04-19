@@ -162,8 +162,12 @@ void Game::Update()
 		SDL_Delay(timeToWait);
 	}
 	
-	const float deltaTimeSec = (SDL_GetTicks64() - milisecsPreviousFrame) / 1000.0f;
+	float deltaTimeSec = (SDL_GetTicks64() - milisecsPreviousFrame) / 1000.0f;
 	milisecsPreviousFrame = SDL_GetTicks64();
+
+	if (deltaTimeSec > FRAME_LIMITER_MAX_DELTA_TIME) {
+		deltaTimeSec = FRAME_LIMITER_MAX_DELTA_TIME;
+	}
 
 	// Reset all the event handlers
 	eventBus->Reset();

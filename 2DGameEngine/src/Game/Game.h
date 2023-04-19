@@ -9,6 +9,7 @@
 
 const unsigned FPS = 120;
 const unsigned MILISEC_PER_FRAME = 1000 / FPS;
+const float FRAME_LIMITER_MAX_DELTA_TIME = 4.0f / FPS;
 
 struct SDL_Window;
 struct SDL_Renderer;
