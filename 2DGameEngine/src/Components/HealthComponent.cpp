@@ -1,6 +1,6 @@
 #include "HealthComponent.h"
 
-HealthComponent::HealthComponent(const unsigned health)
+HealthComponent::HealthComponent(const int health)
 	: health(health)
 {
 }

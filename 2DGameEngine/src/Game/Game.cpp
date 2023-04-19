@@ -245,7 +245,7 @@ void Game::LoadLevel(const unsigned level)
 	chopper.AddComponent<HealthComponent>(100);
 
 	Entity tank = registry->CreateEntity();
-	tank.Tag("enemy");
+	tank.Group("enemies");
 	tank.AddComponent<TransformComponent>(glm::vec2(200.0f, 220.0f), glm::vec2(1.0f, 1.0f), 0.0f);
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
 	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);
@@ -254,7 +254,7 @@ void Game::LoadLevel(const unsigned level)
 	chopper.AddComponent<HealthComponent>(80);
 
 	Entity truck = registry->CreateEntity();
-	truck.Tag("enemy");
+	truck.Group("enemies");
 	truck.AddComponent<TransformComponent>(glm::vec2(800.0f, 500.0f), glm::vec2(1.0f, 1.0f), 0.0f);
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);

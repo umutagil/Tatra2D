@@ -1,6 +1,8 @@
 #include "DamageSystem.h"
 
 #include "../Components/BoxColliderComponent.h"
+#include "../Components/ProjectileComponent.h"
+#include "../Components/HealthComponent.h"
 
 #include "../Logger/Logger.h"
 
@@ -18,7 +20,54 @@ void DamageSystem::SubscribeToEvents(EventBus& eventBus)
 
 void DamageSystem::OnCollisionHappened(CollisionEvent& event)
 {
-	Logger::Log("Damage system received collision. Entities (" + std::to_string(event.a.GetId()) + ", " + std::to_string(event.b.GetId()) + ")");
-	//event.a.Kill();
-	//event.b.Kill();
+	Entity a = event.a;
+	Entity b = event.b;
+
+	if (a.BelongsToGroup("projectiles") && b.HasTag("player")) {
+		OnProjectileHitsPlayer(a, b);
+	}
+
+	if (b.BelongsToGroup("projectiles") && a.HasTag("player")) {
+		OnProjectileHitsPlayer(b, a);
+	}
+
+	if (a.BelongsToGroup("projectiles") && b.BelongsToGroup("enemies")) {
+		OnProjectileHitsEnemy(a, b);
+	}
+
+	if (b.BelongsToGroup("projectiles") && a.BelongsToGroup("enemies")) {
+		OnProjectileHitsEnemy(b, a);
+	}
+}
+
+void DamageSystem::OnProjectileHitsPlayer(Entity projectile, Entity player)
+{
+	Logger::Log("Player received hit. Entities (" + std::to_string(projectile.GetId()) + ", " + std::to_string(player.GetId()) + ")");
+
+	const ProjectileComponent& projectileComp = projectile.GetComponent<ProjectileComponent>();
+	if (!projectileComp.isFriendly) {
+		HealthComponent& healthComp = player.GetComponent<HealthComponent>();
+		healthComp.health -= projectileComp.hitDamage;
+
+		if (healthComp.health <= 0) {
+			player.Kill();
+		}
+
+		projectile.Kill();
+	}
+}
+
+void DamageSystem::OnProjectileHitsEnemy(Entity projectile, Entity enemy)
+{
+	const ProjectileComponent& projectileComp = projectile.GetComponent<ProjectileComponent>();
+	if (projectileComp.isFriendly) {
+		HealthComponent& healthComp = enemy.GetComponent<HealthComponent>();
+		healthComp.health -= projectileComp.hitDamage;
+
+		if (healthComp.health <= 0) {
+			enemy.Kill();
+		}
+
+		projectile.Kill();
+	}
 }

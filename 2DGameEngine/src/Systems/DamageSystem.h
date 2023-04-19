@@ -17,5 +17,7 @@ public:
 private:
 
 	void OnCollisionHappened(CollisionEvent& event);
+	void OnProjectileHitsPlayer(Entity projectile, Entity player);
+	void OnProjectileHitsEnemy(Entity projectile, Entity enemy);
 };
 
