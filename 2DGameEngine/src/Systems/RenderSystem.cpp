@@ -31,8 +31,8 @@ void RenderSystem::Update(SDL_Renderer* renderer, std::unique_ptr<AssetStore>& a
 		const SDL_Rect destRect = {
 			entityPosX,
 			entityPosY,
-			static_cast<int>(sprite.width) * transform.scale.x,
-			static_cast<int>(sprite.height) * transform.scale.y
+			sprite.width * static_cast<int>(transform.scale.x),
+			sprite.height * static_cast<int>(transform.scale.y)
 		};
 
 		SDL_RenderCopyEx(
