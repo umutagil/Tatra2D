@@ -14,6 +14,7 @@
 #include "../Components/CameraFollowComponent.h"
 #include "../Components/ProjectileEmitterComponent.h"
 #include "../Components/HealthComponent.h"
+#include "../Components/TextLabelComponent.h"
 
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
@@ -25,6 +26,7 @@
 #include "../Systems/CameraMovementSystem.h"
 #include "../Systems/ProjectileEmitSystem.h"
 #include "../Systems/ProjectileLifeCycleSystem.h"
+#include "../Systems/RenderTextSystem.h"
 
 #include "../AssetStore/AssetStore.h"
 
@@ -70,8 +72,12 @@ Game::~Game()
 void Game::Initialize()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-		std::cerr << "Error initializing SDL." << std::endl;
+		Logger::Log("Error initializing SDL.");
 		return;
+	}
+
+	if (TTF_Init() != 0) {
+		Logger::Log("Error initializing SDL TTF.");
 	}
 	
 	SDL_DisplayMode displayMode;
@@ -217,6 +223,7 @@ void Game::LoadLevel(const unsigned level)
 	registry->AddSystem<MovementSystem>();
 	registry->AddSystem<RenderSystem>();
 	registry->AddSystem<DebugRenderSystem>();
+	registry->AddSystem<RenderTextSystem>();
 	registry->AddSystem<AnimationSystem>();
 	registry->AddSystem<CollisionSystem>();
 	registry->AddSystem<DamageSystem>();
@@ -231,13 +238,14 @@ void Game::LoadLevel(const unsigned level)
 	assetStore->AddTexture(renderer, "chopper-image", "./assets/images/chopper-spritesheet.png");
 	assetStore->AddTexture(renderer, "bullet-image", "./assets/images/bullet.png");
 	assetStore->AddTexture(renderer, "radar-image", "./assets/images/radar.png");
+	assetStore->AddFont("charriot-font", "./assets/fonts/charriot.ttf", 22);
 
 	// Load the tilemap
 	LoadTileMap();
 
 	// Add entities
 	Entity chopper = registry->CreateEntity();
-	const float chopperSpeed = 150.0f;
+	const float chopperSpeed = 100.0f;
 	chopper.Tag("player");
 	chopper.AddComponent<TransformComponent>(glm::vec2(10.0f, 300.0f), glm::vec2(1.0f, 1.0f), 0.0f);
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, -chopperSpeed));
@@ -274,6 +282,12 @@ void Game::LoadLevel(const unsigned level)
 	radar.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
 	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 5, true /* isFixed */);
 	radar.AddComponent<AnimationComponent>(8, 5);
+
+	Entity label = registry->CreateEntity();
+	SDL_Color labelColor = { 10, 220, 200 };
+	const bool isLabelFixed = true;
+	label.AddComponent<TextLabelComponent>(glm::vec2(windowWidth / 2 - 100, 10), "Our precious text label!", "charriot-font", labelColor, isLabelFixed);
+
 }
 
 void Game::LoadTileMap()
