@@ -73,6 +73,11 @@ void Registry::Update()
         entityComponentSignatures[entityId].reset();
         freeIds.push_back(entityId);
 
+        for (auto pool : componentPools) {
+            assert(pool);
+            pool->RemoveEntityFromPool(entityId);
+        }
+
         // Remove entity from the tags and groups
         RemoveEntityTag(entity);
         RemoveEntityGroup(entity);

@@ -10,6 +10,7 @@
 #include <type_traits>
 
 #include "../Logger/Logger.h"
+#include <cassert>
 
 class Registry;
 class System;
@@ -111,6 +112,7 @@ class IPool
 {
 public:
 	virtual ~IPool() {}
+	virtual void RemoveEntityFromPool(const unsigned entityId) = 0;
 };
 
 /**
@@ -121,23 +123,39 @@ template<typename T>
 class Pool : public IPool
 {
 public:
-	Pool(const size_t size = 100) { data.resize(size); }
+	Pool(const size_t capacity = 100)
+	{ 
+		size = 0;
+		data.reserve(size);
+	}
 	virtual ~Pool() = default;
 
-	bool isEmpty() const					{ return data.empty(); }
-	size_t getSize() const					{ return data.size(); }
+	bool IsEmpty() const					{ return size == 0; }
+	size_t GetSize() const					{ return size; }
 	void Resize(size_t new_size)			{ data.resize(new_size); }
 	
-	void Clear()							{ data.clear(); }
+	void Clear()							{ data.clear(); size = 0; }
 	void Add(T object)						{ data.push_back(object); }
 
-	void Set(const size_t index, T object)	{ data[index] = object; }
-	T& Get(size_t index)					{ return data[index]; }
+	void Set(const unsigned entityId, T object);
+	void Remove(const unsigned entityId);
+
+	virtual void RemoveEntityFromPool(const unsigned entityId) override;
+
+	T& Get(const unsigned entityId);
 	T& operator [](size_t index)			{ return data[index]; }
 
 
 private:
+	// Vector of component objects
 	std::vector<T> data;
+
+	// Current size of component objects
+	size_t size;
+
+	// Maps to keep track of entity Ids and their indices.
+	std::unordered_map<unsigned, size_t> entityIdToIndex;
+	std::unordered_map<size_t, unsigned> indexToEntityId;
 };
 
 /**
@@ -274,10 +292,6 @@ void Registry::AddComponent(Entity entity, TArgs&& ...args)
 
 	std::shared_ptr<Pool<TComponent>> componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentId]);
 
-	if (entityId >= componentPool->getSize()) {
-		componentPool->Resize(numEntities);
-	}
-
 	TComponent newComponent(std::forward<TArgs>(args)...);
 	componentPool->Set(entityId, newComponent);
 
@@ -291,6 +305,12 @@ void Registry::RemoveComponent(Entity entity)
 {
 	const unsigned entityId = entity.GetId();
 	const unsigned componentId = Component<TComponent>::GetId();
+
+	// Remove the component from the pool.
+	std::shared_ptr<Pool<TComponent>> componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentId]);
+	componentPool->Remove(entityId);
+
+	// Set component signature to false for this entity.
 	entityComponentSignatures[entityId].set(componentId);
 
 	//Logger::Log("Component (ID: " + std::to_string(componentId) + ")" + " removed from the entity (ID: " + std::to_string(entityId) + ")");
@@ -366,4 +386,66 @@ template<typename TComponent, typename ...TArgs>
 TComponent& Entity::GetComponent() const
 {
 	return registry->GetComponent<TComponent>(*this);
+}
+
+// Pool related functions
+
+template<typename T>
+inline void Pool<T>::Set(const unsigned entityId, T object)
+{
+	auto indexIt = entityIdToIndex.find(entityId);
+	if (indexIt != entityIdToIndex.end()) {
+		const size_t index = indexIt->second;
+		data[index] = object;
+		return;
+	}
+
+	if (size >= data.capacity()) {
+		data.reserve(data.capacity() * 2);
+	}
+
+	const size_t index = size;
+	entityIdToIndex.emplace(entityId, index);
+	indexToEntityId.emplace(index, entityId);
+	
+	if (index == data.size()) {
+		data.emplace_back(object);
+	}
+	else {
+		data[index] = object;
+	}
+
+	++size;
+}
+
+template<typename T>
+inline void Pool<T>::Remove(const unsigned entityId)
+{
+	const size_t indexOfRemoved = entityIdToIndex[entityId];
+	const size_t indexOfLast = size - 1;
+	data[indexOfRemoved] = data[indexOfLast];
+
+	const unsigned entityIdOfLast = indexToEntityId[indexOfLast];
+	indexToEntityId[indexOfRemoved] = entityIdOfLast;
+	indexToEntityId.erase(indexOfLast);
+
+	entityIdToIndex[entityIdOfLast] = indexOfRemoved;
+	entityIdToIndex.erase(entityId);
+
+	--size;
+}
+
+template<typename T>
+inline void Pool<T>::RemoveEntityFromPool(const unsigned entityId)
+{
+	if (entityIdToIndex.find(entityId) != entityIdToIndex.end()) {
+		Remove(entityId);
+	}
+}
+
+template<typename T>
+inline T& Pool<T>::Get(const unsigned entityId)
+{
+	const size_t index = entityIdToIndex[entityId];
+	return data[index];
 }
