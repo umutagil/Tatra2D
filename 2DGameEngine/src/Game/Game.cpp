@@ -333,8 +333,8 @@ void Game::LoadTileMap()
 		}
 	}
 
-	mapWidth = tileMapIndices[0].size() * tileSize * tileScale;
-	mapHeight = tileMapIndices.size() * tileSize * tileScale;
+	mapWidth = static_cast<int>(tileMapIndices[0].size()) * tileSize * static_cast<int>(tileScale);
+	mapHeight = static_cast<int>(tileMapIndices.size()) * tileSize * static_cast<int>(tileScale);
 }
 
 void Game::InitializeCamera()
