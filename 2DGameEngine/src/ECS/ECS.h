@@ -264,6 +264,7 @@ private:
 template<typename T>
 inline void System::RequireComponent()
 {
+	static_assert(!std::is_base_of_v<System, T>);
 	const auto componentId = Component<T>::GetId();
 	componentSignature.set(componentId);
 }
