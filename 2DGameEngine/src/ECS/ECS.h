@@ -271,7 +271,7 @@ inline void System::RequireComponent()
 template<typename T>
 inline unsigned Component<T>::GetId()
 {
-	static auto id = nextId++;
+	static unsigned id = nextId++;
 	return id;
 }
 
