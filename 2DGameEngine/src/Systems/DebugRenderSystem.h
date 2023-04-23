@@ -12,11 +12,11 @@ class DebugRenderSystem : public System
 public:
 	DebugRenderSystem();
 
-	void Update(SDL_Renderer* renderer, SDL_Rect& camera);
+	void Update(SDL_Renderer& renderer, const SDL_Rect& camera);
 	void HandleInput(const SDL_Event& event);
 
 private:
-	void DrawColliders(SDL_Renderer* renderer, SDL_Rect& camera);
+	void DrawColliders(SDL_Renderer& renderer, const SDL_Rect& camera);
 
 private:
 	bool colliderDrawingEnabled;

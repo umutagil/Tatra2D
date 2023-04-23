@@ -194,9 +194,10 @@ void Game::Render()
 	SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
 	SDL_RenderClear(renderer);
 
-	registry->GetSystem<RenderSystem>().Update(renderer, assetStore, camera);
+	registry->GetSystem<RenderSystem>().Update(*renderer, *assetStore, camera);
+	registry->GetSystem<RenderTextSystem>().Update(*renderer, *assetStore, camera);
 	if (isDebugModeOn) {
-		registry->GetSystem<DebugRenderSystem>().Update(renderer, camera);
+		registry->GetSystem<DebugRenderSystem>().Update(*renderer, camera);
 	}
 
 	// Render to screen

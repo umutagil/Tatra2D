@@ -13,7 +13,7 @@ RenderSystem::RenderSystem()
 	RequireComponent<SpriteComponent>();
 }
 
-void RenderSystem::Update(SDL_Renderer* renderer, std::unique_ptr<AssetStore>& assetStore, SDL_Rect& camera)
+void RenderSystem::Update(SDL_Renderer& renderer, const AssetStore& assetStore, const SDL_Rect& camera)
 {
 	// Sort the entities according to zIndex
 	std::vector<Entity> entitiesSorted(GetSystemEntities());
@@ -36,8 +36,8 @@ void RenderSystem::Update(SDL_Renderer* renderer, std::unique_ptr<AssetStore>& a
 		};
 
 		SDL_RenderCopyEx(
-			renderer,
-			assetStore->GetTexture(sprite.assetId),
+			&renderer,
+			assetStore.GetTexture(sprite.assetId),
 			&sprite.srcRect,
 			&destRect,
 			transform.rotation,

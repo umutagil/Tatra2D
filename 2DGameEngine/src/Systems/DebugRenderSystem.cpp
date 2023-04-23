@@ -18,7 +18,7 @@ DebugRenderSystem::DebugRenderSystem()
 	RequireComponent<BoxColliderComponent>();
 }
 
-void DebugRenderSystem::Update(SDL_Renderer* renderer, SDL_Rect& camera)
+void DebugRenderSystem::Update(SDL_Renderer& renderer, const SDL_Rect& camera)
 {
 	if (colliderDrawingEnabled) {
 		DrawColliders(renderer, camera);
@@ -30,7 +30,7 @@ void DebugRenderSystem::HandleInput(const SDL_Event& event)
 }
 
 
-void DebugRenderSystem::DrawColliders(SDL_Renderer* renderer, SDL_Rect& camera)
+void DebugRenderSystem::DrawColliders(SDL_Renderer& renderer, const SDL_Rect& camera)
 {
 	for (Entity entity : GetSystemEntities()) {
 
@@ -51,7 +51,7 @@ void DebugRenderSystem::DrawColliders(SDL_Renderer* renderer, SDL_Rect& camera)
 		}
 
 		const Uint8* collisionColor = isColliding ? colliderColorCollision : colliderColorNoCollision;
-		SDL_SetRenderDrawColor(renderer, collisionColor[0], collisionColor[1], collisionColor[2], collisionColor[3]);
+		SDL_SetRenderDrawColor(&renderer, collisionColor[0], collisionColor[1], collisionColor[2], collisionColor[3]);
 
 		SDL_Rect boxColliderRect = {
 			static_cast<int>(aabb.min.x) - camera.x,
@@ -60,6 +60,6 @@ void DebugRenderSystem::DrawColliders(SDL_Renderer* renderer, SDL_Rect& camera)
 			static_cast<int>(aabb.GetHeight()),
 		};
 
-		SDL_RenderDrawRect(renderer, &boxColliderRect);
+		SDL_RenderDrawRect(&renderer, &boxColliderRect);
 	}
 }
