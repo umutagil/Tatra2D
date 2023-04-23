@@ -2,7 +2,7 @@
 
 #include <SDL.h>
 
-ProjectileComponent::ProjectileComponent(const int hitDamage, const unsigned projectileDurationS, const bool isFriendly)
+ProjectileComponent::ProjectileComponent(const int hitDamage, const float projectileDurationS, const bool isFriendly)
 	: hitDamage(hitDamage)
 	, projectileDurationS(projectileDurationS)
 	, isFriendly(isFriendly)
