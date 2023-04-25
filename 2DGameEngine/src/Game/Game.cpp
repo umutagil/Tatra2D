@@ -27,6 +27,7 @@
 #include "../Systems/ProjectileEmitSystem.h"
 #include "../Systems/ProjectileLifeCycleSystem.h"
 #include "../Systems/RenderTextSystem.h"
+#include "../Systems/HealthDisplaySystem.h"
 
 #include "../AssetStore/AssetStore.h"
 
@@ -202,6 +203,7 @@ void Game::Render()
 
 	registry->GetSystem<RenderSystem>().Update(*renderer, *assetStore, camera);
 	registry->GetSystem<RenderTextSystem>().Update(*renderer, *assetStore, camera);
+	registry->GetSystem<HealthDisplaySystem>().Update(*renderer, *assetStore, camera);
 	if (isDebugModeOn) {
 		registry->GetSystem<DebugRenderSystem>().Update(*renderer, camera);
 	}
@@ -231,6 +233,7 @@ void Game::LoadLevel(const unsigned level)
 	registry->AddSystem<CameraMovementSystem>();
 	registry->AddSystem<ProjectileEmitSystem>();
 	registry->AddSystem<ProjectileLifeCycleSystem>();
+	registry->AddSystem<HealthDisplaySystem>();
 
 	// Add assets to asset store
 	assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
@@ -238,42 +241,14 @@ void Game::LoadLevel(const unsigned level)
 	assetStore->AddTexture(renderer, "chopper-image", "./assets/images/chopper-spritesheet.png");
 	assetStore->AddTexture(renderer, "bullet-image", "./assets/images/bullet.png");
 	assetStore->AddTexture(renderer, "radar-image", "./assets/images/radar.png");
-	assetStore->AddFont("charriot-font", "./assets/fonts/charriot.ttf", 22);
+	assetStore->AddFont("charriot-font-20", "./assets/fonts/charriot.ttf", 20);
+	assetStore->AddFont("charriot-font-10", "./assets/fonts/charriot.ttf", 10);
 
 	// Load the tilemap
 	LoadTileMap();
 
-	// Add entities
-	Entity chopper = registry->CreateEntity();
-	const float chopperSpeed = 100.0f;
-	chopper.Tag("player");
-	chopper.AddComponent<TransformComponent>(glm::vec2(10.0f, 300.0f), glm::vec2(1.0f, 1.0f), 0.0f);
-	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, -chopperSpeed));
-	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 3);
-	chopper.AddComponent<AnimationComponent>(2, 15);
-	chopper.AddComponent<BoxColliderComponent>(32, 32);
-	chopper.AddComponent<KeyboardControlledComponent>(glm::vec2(0.0f, -chopperSpeed), glm::vec2(chopperSpeed, 0.0f), glm::vec2(0.0f, chopperSpeed), glm::vec2(-chopperSpeed, 0.0f));
-	chopper.AddComponent<CameraFollowComponent>();
-	chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(200.0f, 200.0f), 0.1f, 10.0f, 10, true);
-	chopper.AddComponent<HealthComponent>(100);
-
-	Entity tank = registry->CreateEntity();
-	tank.Group("enemies");
-	tank.AddComponent<TransformComponent>(glm::vec2(200.0f, 220.0f), glm::vec2(1.0f, 1.0f), 0.0f);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
-	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);
-	tank.AddComponent<BoxColliderComponent>(32, 32);
-	tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100.0f, 0.0f), 1.0f, 5.0f, 10, false);
-	tank.AddComponent<HealthComponent>(80);
-
-	Entity truck = registry->CreateEntity();
-	truck.Group("enemies");
-	truck.AddComponent<TransformComponent>(glm::vec2(800.0f, 500.0f), glm::vec2(1.0f, 1.0f), 0.0f);
-	truck.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
-	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);
-	truck.AddComponent<BoxColliderComponent>(32, 32);
-	truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0f, -100.0f), 2.0f, 5.0f, 10, false);
-	truck.AddComponent<HealthComponent>(40);
+	// Add character entities
+	CreateCharacters();
 
 	// Add UI entities
 	Entity radar = registry->CreateEntity();
@@ -286,7 +261,7 @@ void Game::LoadLevel(const unsigned level)
 	Entity label = registry->CreateEntity();
 	SDL_Color labelColor = { 10, 220, 200 };
 	const bool isLabelFixed = true;
-	label.AddComponent<TextLabelComponent>(glm::vec2(windowWidth / 2 - 100, 10), "Our precious text label!", "charriot-font", labelColor, isLabelFixed);
+	label.AddComponent<TextLabelComponent>(glm::vec2(windowWidth / 2 - 100, 10), "Iyi Bayramlar!", "charriot-font", labelColor, isLabelFixed);
 
 }
 
@@ -349,6 +324,40 @@ void Game::LoadTileMap()
 
 	mapWidth = static_cast<int>(tileMapIndices[0].size()) * tileSize * static_cast<int>(tileScale);
 	mapHeight = static_cast<int>(tileMapIndices.size()) * tileSize * static_cast<int>(tileScale);
+}
+
+void Game::CreateCharacters()
+{
+	Entity chopper = registry->CreateEntity();
+	const float chopperSpeed = 100.0f;
+	chopper.Tag("player");
+	chopper.AddComponent<TransformComponent>(glm::vec2(10.0f, 300.0f), glm::vec2(1.0f, 1.0f), 0.0f);
+	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, -chopperSpeed));
+	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 3);
+	chopper.AddComponent<AnimationComponent>(2, 15);
+	chopper.AddComponent<BoxColliderComponent>(32, 32);
+	chopper.AddComponent<KeyboardControlledComponent>(glm::vec2(0.0f, -chopperSpeed), glm::vec2(chopperSpeed, 0.0f), glm::vec2(0.0f, chopperSpeed), glm::vec2(-chopperSpeed, 0.0f));
+	chopper.AddComponent<CameraFollowComponent>();
+	chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(200.0f, 200.0f), 0.1f, 10.0f, 10, true);
+	chopper.AddComponent<HealthComponent>(100);
+
+	Entity tank = registry->CreateEntity();
+	tank.Group("enemies");
+	tank.AddComponent<TransformComponent>(glm::vec2(200.0f, 220.0f), glm::vec2(1.0f, 1.0f), 0.0f);
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
+	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);
+	tank.AddComponent<BoxColliderComponent>(32, 32);
+	tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100.0f, 0.0f), 1.0f, 5.0f, 10, false);
+	tank.AddComponent<HealthComponent>(80);
+
+	Entity truck = registry->CreateEntity();
+	truck.Group("enemies");
+	truck.AddComponent<TransformComponent>(glm::vec2(800.0f, 500.0f), glm::vec2(1.0f, 1.0f), 0.0f);
+	truck.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
+	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);
+	truck.AddComponent<BoxColliderComponent>(32, 32);
+	truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0f, -100.0f), 2.0f, 5.0f, 10, false);
+	truck.AddComponent<HealthComponent>(40);
 }
 
 void Game::InitializeCamera()

@@ -35,6 +35,7 @@ public:
 private:
 	void LoadLevel(const unsigned level);
 	void LoadTileMap();
+	void CreateCharacters();
 	void InitializeCamera();
 
 public:

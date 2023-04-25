@@ -50,6 +50,7 @@ void DamageSystem::OnProjectileHitsPlayer(Entity projectile, Entity player)
 		healthComp.health -= projectileComp.hitDamage;
 
 		if (healthComp.health <= 0) {
+			healthComp.health = 0;
 			player.Kill();
 		}
 

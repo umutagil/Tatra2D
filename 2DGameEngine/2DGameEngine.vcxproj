@@ -153,6 +153,7 @@
     <ClInclude Include="src\Systems\CollisionSystem.h" />
     <ClInclude Include="src\Systems\DamageSystem.h" />
     <ClInclude Include="src\Systems\DebugRenderSystem.h" />
+    <ClInclude Include="src\Systems\HealthDisplaySystem.h" />
     <ClInclude Include="src\Systems\KeyboardControlSystem.h" />
     <ClInclude Include="src\Systems\ProjectileEmitSystem.h" />
     <ClInclude Include="src\Systems\ProjectileLifeCycleSystem.h" />
@@ -568,6 +569,7 @@
     <ClCompile Include="src\Systems\CollisionSystem.cpp" />
     <ClCompile Include="src\Systems\DamageSystem.cpp" />
     <ClCompile Include="src\Systems\DebugRenderSystem.cpp" />
+    <ClCompile Include="src\Systems\HealthDisplaySystem.cpp" />
     <ClCompile Include="src\Systems\KeyboardControlSystem.cpp" />
     <ClCompile Include="src\Systems\ProjectileEmitSystem.cpp" />
     <ClCompile Include="src\Systems\ProjectileLifeCycleSystem.cpp" />
