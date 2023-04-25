@@ -1285,9 +1285,6 @@
     <ClCompile Include="libs\imgui\imgui_draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="libs\imgui\imgui_sdl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="libs\imgui\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

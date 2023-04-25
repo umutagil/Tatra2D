@@ -37,6 +37,10 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <glm/glm.hpp>
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_sdl2.h>
+#include <imgui/imgui_impl_sdlrenderer.h>
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -112,9 +116,27 @@ void Game::Initialize()
 		return;
 	}
 
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+
+	ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
+	ImGui_ImplSDLRenderer_Init(renderer);
+
 	InitializeCamera();
 
 	isRunning = true;
+}
+
+void Game::Destroy()
+{
+	ImGui_ImplSDLRenderer_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
+
+	SDL_DestroyWindow(window);
+	SDL_DestroyRenderer(renderer);
+	SDL_Quit();
 }
 
 void Game::Run()
@@ -206,17 +228,22 @@ void Game::Render()
 	registry->GetSystem<HealthDisplaySystem>().Update(*renderer, *assetStore, camera);
 	if (isDebugModeOn) {
 		registry->GetSystem<DebugRenderSystem>().Update(*renderer, camera);
+
+		ImGui_ImplSDLRenderer_NewFrame();
+		ImGui_ImplSDL2_NewFrame();
+		ImGui::NewFrame();
+		ImGui::ShowDemoWindow();
+		ImGui::Render();
+
+		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+		//SDL_SetRenderDrawColor(renderer, (Uint8)(clear_color.x * 255), (Uint8)(clear_color.y * 255), (Uint8)(clear_color.z * 255), (Uint8)(clear_color.w * 255));
+		//SDL_RenderClear(renderer);
+		ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
+		SDL_RenderPresent(renderer);
 	}
 
 	// Render to screen
 	SDL_RenderPresent(renderer);
-}
-
-void Game::Destroy()
-{
-	SDL_DestroyWindow(window);
-	SDL_DestroyRenderer(renderer);
-	SDL_Quit();
 }
 
 void Game::LoadLevel(const unsigned level)

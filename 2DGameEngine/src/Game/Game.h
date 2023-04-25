@@ -25,12 +25,12 @@ public:
 	~Game();
 
 	void Initialize();
+	void Destroy();
 	void Run();
 	void ProcessInput();
 	void Setup();
 	void Update();
 	void Render();
-	void Destroy();
 
 private:
 	void LoadLevel(const unsigned level);
