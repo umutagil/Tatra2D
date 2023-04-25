@@ -18,7 +18,7 @@ void RenderTextSystem::Update(SDL_Renderer& renderer, const AssetStore& assetSto
 	for (Entity entity : GetSystemEntities()) {
 		const TextLabelComponent& textLabel = entity.GetComponent<TextLabelComponent>();
 
-		SDL_Surface* surface = TTF_RenderText_Blended(assetStore.GetFont(textLabel.assetId), textLabel.text.c_str(), textLabel.color);
+		SDL_Surface* surface = TTF_RenderText_Blended(assetStore.GetFont(textLabel.fontAssetId), textLabel.text.c_str(), textLabel.color);
 		SDL_Texture* texture = SDL_CreateTextureFromSurface(&renderer, surface);
 		SDL_FreeSurface(surface);
 
@@ -37,5 +37,8 @@ void RenderTextSystem::Update(SDL_Renderer& renderer, const AssetStore& assetSto
 		};
 
 		SDL_RenderCopy(&renderer, texture, nullptr, &destRect);
+
+		// Cleanup texture
+		SDL_DestroyTexture(texture);
 	}
 }
