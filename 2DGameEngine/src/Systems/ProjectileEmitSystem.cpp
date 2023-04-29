@@ -40,7 +40,7 @@ void ProjectileEmitSystem::Update(std::unique_ptr<Registry>& registry, const flo
 
 		glm::vec2 projectileVelocity(projectileEmitter.projectileVelocity);
 
-		if (entity.HasComponent<CameraFollowComponent>()) {
+		if (entity.HasTag("player")) {
 			if (!pendingPlayerProjectile) {
 				continue;
 			}
