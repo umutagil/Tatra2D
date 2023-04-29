@@ -6,6 +6,7 @@
 
 #include <SDL.h>
 #include <algorithm>
+#include <assert.h>
 
 RenderSystem::RenderSystem()
 {
@@ -27,12 +28,23 @@ void RenderSystem::Update(SDL_Renderer& renderer, const AssetStore& assetStore, 
 
 		const int entityPosX = static_cast<int>(transform.position.x) - (sprite.isFixed ? 0 : camera.x);
 		const int entityPosY = static_cast<int>(transform.position.y) - (sprite.isFixed ? 0 : camera.y);
+		const int entityWidth = sprite.width * static_cast<int>(transform.scale.x);
+		const int entityHeight = sprite.height * static_cast<int>(transform.scale.y);
+
+		const bool isEntityOutOfCameraView = ((entityPosX + entityWidth) < 0) || (entityPosX > camera.w) || 
+											 ((entityPosY + entityHeight) < 0) || (entityPosY > camera.h);
+
+		if (isEntityOutOfCameraView) {
+			// Cull the sprites that are out of camera view.
+			assert(!sprite.isFixed);
+			continue;
+		}
 
 		const SDL_Rect destRect = {
 			entityPosX,
 			entityPosY,
-			sprite.width * static_cast<int>(transform.scale.x),
-			sprite.height * static_cast<int>(transform.scale.y)
+			entityWidth,
+			entityHeight
 		};
 
 		SDL_RenderCopyEx(

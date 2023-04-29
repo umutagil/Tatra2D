@@ -351,10 +351,10 @@ void Game::LoadTileMap()
 void Game::CreateCharacters()
 {
 	Entity chopper = registry->CreateEntity();
-	const float chopperSpeed = 100.0f;
+	const float chopperSpeed = 300.0f;
 	chopper.Tag("player");
 	chopper.AddComponent<TransformComponent>(glm::vec2(10.0f, 300.0f), glm::vec2(1.0f, 1.0f), 0.0f);
-	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, -chopperSpeed));
+	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 3);
 	chopper.AddComponent<AnimationComponent>(2, 15);
 	chopper.AddComponent<BoxColliderComponent>(32, 32);

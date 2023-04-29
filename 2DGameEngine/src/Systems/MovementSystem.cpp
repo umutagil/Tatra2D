@@ -11,6 +11,27 @@
 
 #include <assert.h>
 
+const float OutOfMapEntityKillMargin = 80.0f;
+
+static bool isInRange(const float value, const float min, const float max)
+{
+	assert(min <= max);
+	return (value >= min) && (value <= max);
+}
+
+static bool isFullyInsideMap(const glm::vec2& pos, const glm::vec2 size = glm::vec2(0.0f))
+{
+	const float rightBorder = Game::mapWidth - size.x;
+	const float bottomBorder = Game::mapHeight - size.y;
+	return isInRange(pos.x, 0, rightBorder) && isInRange(pos.y, 0, bottomBorder);
+}
+
+static bool isFullyOutsideMap(const glm::vec2& pos, const glm::vec2 size = glm::vec2(0.0f), const float margin = 0.0f)
+{
+	const float rightBorder = Game::mapWidth + size.x + margin;
+	const float bottomBorder = Game::mapHeight + size.y + margin;
+	return !isInRange(pos.x, -size.x, rightBorder) && !isInRange(pos.y, -size.y, bottomBorder);
+}
 
 MovementSystem::MovementSystem()
 {
@@ -24,11 +45,34 @@ void MovementSystem::Update(const float deltaTime)
 	// Update entity position based on its velocity
 	// every frame of the game loop.
 
+	const glm::vec2 mapMin(0.0f);
+	const glm::vec2 mapMax(Game::mapWidth - 32, Game::mapHeight - 32);
+
 	for (Entity entity: GetSystemEntities()) {
 		TransformComponent& transform = entity.GetComponent<TransformComponent>();
 		const RigidBodyComponent& rigidbody = entity.GetComponent<RigidBodyComponent>();
+		const SpriteComponent& sprite = entity.GetComponent<SpriteComponent>();
+		const glm::vec2 entitySize((sprite.width * transform.scale.x), (sprite.height * transform.scale.y));
 
-		transform.position += rigidbody.velocity * deltaTime;
+		const glm::vec2 deltaPosition = rigidbody.velocity * deltaTime;
+		transform.position += deltaPosition;
+
+		if (entity.HasTag("player")) {
+			if (!isFullyInsideMap(transform.position, entitySize)) {
+				// Prevent player to pass map borders
+				transform.position -= deltaPosition;
+			}
+		}
+		else if (entity.BelongsToGroup("projectiles")) {
+			if (isFullyOutsideMap(transform.position, entitySize)) {
+				entity.Kill();
+			}
+		}
+		else if (entity.BelongsToGroup("enemies")) {
+			if (isFullyOutsideMap(transform.position, entitySize, OutOfMapEntityKillMargin)) {
+				entity.Kill();
+			}
+		}
 	}
 }
 
