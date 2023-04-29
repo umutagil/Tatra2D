@@ -28,6 +28,7 @@
 #include "../Systems/ProjectileLifeCycleSystem.h"
 #include "../Systems/RenderTextSystem.h"
 #include "../Systems/HealthDisplaySystem.h"
+#include "../Systems/RenderGUISystem.h"
 
 #include "../AssetStore/AssetStore.h"
 
@@ -117,7 +118,7 @@ void Game::Initialize()
 	}
 
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 
 	ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
@@ -155,6 +156,8 @@ void Game::ProcessInput()
 	SDL_Event sdlEvent;
 	while (SDL_PollEvent(&sdlEvent))
 	{
+		ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
+
 		switch (sdlEvent.type) {
 			case SDL_QUIT:
 				isRunning = false;
@@ -228,18 +231,7 @@ void Game::Render()
 	registry->GetSystem<HealthDisplaySystem>().Update(*renderer, *assetStore, camera);
 	if (isDebugModeOn) {
 		registry->GetSystem<DebugRenderSystem>().Update(*renderer, camera);
-
-		ImGui_ImplSDLRenderer_NewFrame();
-		ImGui_ImplSDL2_NewFrame();
-		ImGui::NewFrame();
-		ImGui::ShowDemoWindow();
-		ImGui::Render();
-
-		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-		//SDL_SetRenderDrawColor(renderer, (Uint8)(clear_color.x * 255), (Uint8)(clear_color.y * 255), (Uint8)(clear_color.z * 255), (Uint8)(clear_color.w * 255));
-		//SDL_RenderClear(renderer);
-		ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
-		SDL_RenderPresent(renderer);
+		registry->GetSystem<RenderGUISystem>().Update(*registry, camera);
 	}
 
 	// Render to screen
@@ -252,6 +244,7 @@ void Game::LoadLevel(const unsigned level)
 	registry->AddSystem<MovementSystem>();
 	registry->AddSystem<RenderSystem>();
 	registry->AddSystem<DebugRenderSystem>();
+	registry->AddSystem<RenderGUISystem>();
 	registry->AddSystem<RenderTextSystem>();
 	registry->AddSystem<AnimationSystem>();
 	registry->AddSystem<CollisionSystem>();
