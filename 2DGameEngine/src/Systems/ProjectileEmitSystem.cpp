@@ -48,11 +48,12 @@ void ProjectileEmitSystem::Update(std::unique_ptr<Registry>& registry, const flo
 			pendingPlayerProjectile = false;
 
 			const RigidBodyComponent& rigidBody = entity.GetComponent<RigidBodyComponent>();
-			const glm::vec2 playerDirection = glm::normalize(rigidBody.velocity);
-			if (playerDirection != glm::vec2(0)) {
-				projectileVelocity.x = playerDirection.x * projectileVelocity.x;
-				projectileVelocity.y = playerDirection.y * projectileVelocity.y;
-			}
+			const glm::vec2 playerDirection = rigidBody.velocity != glm::vec2(0)
+											  ? glm::normalize(rigidBody.velocity)
+											  : glm::vec2(0.0f, -1.0f);
+
+			projectileVelocity.x = playerDirection.x * projectileVelocity.x;
+			projectileVelocity.y = playerDirection.y * projectileVelocity.y;
 		}
 
 		glm::vec2 projectilePos = transform.position;
