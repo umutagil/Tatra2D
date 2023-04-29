@@ -12,8 +12,6 @@ public:
 
 	void SubscribeToEvents(EventBus& eventBus);
 
-	void Update(const float deltaTime);
-
 private:
 
 	void OnCollisionHappened(CollisionEvent& event);
