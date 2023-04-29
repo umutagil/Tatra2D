@@ -42,6 +42,6 @@ void RenderSystem::Update(SDL_Renderer& renderer, const AssetStore& assetStore, 
 			&destRect,
 			transform.rotation,
 			nullptr,
-			SDL_FLIP_NONE);
+			sprite.flip);
 	}
 }

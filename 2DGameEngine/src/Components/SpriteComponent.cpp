@@ -6,6 +6,7 @@ SpriteComponent::SpriteComponent(std::string assetId, const int width, const int
 	, width(width)
 	, height(height)
 	, zIndex(zIndex)
+	, flip(SDL_FLIP_NONE)
 	, isFixed(isFixed)
 	, srcRect{srcRectX, srcRectY, width, height}
 {
