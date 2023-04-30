@@ -74,8 +74,10 @@ void Registry::Update()
         freeIds.push_back(entityId);
 
         for (auto pool : componentPools) {
-            assert(pool);
-            pool->RemoveEntityFromPool(entityId);
+            //assert(pool); TODO: fix empty pool pointer
+            if (pool) {
+                pool->RemoveEntityFromPool(entityId);
+            }
         }
 
         // Remove entity from the tags and groups
