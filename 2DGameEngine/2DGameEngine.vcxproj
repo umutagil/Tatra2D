@@ -562,13 +562,6 @@
     <ClCompile Include="libs\imgui\imgui_impl_sdlrenderer.cpp" />
     <ClCompile Include="libs\imgui\imgui_tables.cpp" />
     <ClCompile Include="src\AssetStore\AssetStore.cpp" />
-    <ClCompile Include="src\Components\AnimationComponent.cpp" />
-    <ClCompile Include="src\Components\BoxColliderComponent.cpp" />
-    <ClCompile Include="src\Components\HealthComponent.cpp" />
-    <ClCompile Include="src\Components\KeyboardControlComponent.cpp" />
-    <ClCompile Include="src\Components\ProjectileComponent.cpp" />
-    <ClCompile Include="src\Components\ProjectileEmitterComponent.cpp" />
-    <ClCompile Include="src\Components\SpriteComponent.cpp" />
     <ClCompile Include="src\EventBus\EventBus.cpp" />
     <ClCompile Include="src\Systems\AnimationSystem.cpp" />
     <ClCompile Include="src\Systems\CameraMovementSystem.cpp" />
@@ -581,8 +574,6 @@
     <ClCompile Include="src\Systems\ProjectileLifeCycleSystem.cpp" />
     <ClCompile Include="src\Systems\RenderGUISystem.cpp" />
     <ClCompile Include="src\Systems\RenderSystem.cpp" />
-    <ClCompile Include="src\Components\RigidBodyComponent.cpp" />
-    <ClCompile Include="src\Components\TransformComponent.cpp" />
     <ClCompile Include="src\ECS\ECS.cpp" />
     <ClCompile Include="src\Systems\MovementSystem.cpp" />
     <ClCompile Include="src\Logger\Logger.cpp" />

@@ -2,7 +2,10 @@
 
 struct HealthComponent
 {
-	HealthComponent(const int health = 100);
+	HealthComponent(const int health = 100)
+		: health(health)
+	{
+	}
 
 	int health;
 };

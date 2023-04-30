@@ -11,7 +11,12 @@
  */
 struct BoxColliderComponent
 {
-	BoxColliderComponent(const int width = 0, const int height = 0, const glm::vec2 offset = glm::vec2(0));
+	BoxColliderComponent(const int width = 0, const int height = 0, const glm::vec2 offset = glm::vec2(0))
+		: width(width)
+		, height(height)
+		, offset(offset)
+	{
+	}
 
 	int width;
 	int height;
