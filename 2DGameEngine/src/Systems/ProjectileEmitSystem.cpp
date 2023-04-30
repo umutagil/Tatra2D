@@ -12,6 +12,7 @@
 #include "../Events/KeyPressedEvent.h"
 
 #include <SDL.h>
+#include <assert.h>
 
 ProjectileEmitSystem::ProjectileEmitSystem()
 	: pendingPlayerProjectile(false)
@@ -20,7 +21,6 @@ ProjectileEmitSystem::ProjectileEmitSystem()
 	RequireComponent<TransformComponent>();
 	RequireComponent<SpriteComponent>();
 	RequireComponent<BoxColliderComponent>();
-	RequireComponent<RigidBodyComponent>();
 }
 
 // TODO: Maybe find a cleaner way than sending registry as parameter.
@@ -47,6 +47,7 @@ void ProjectileEmitSystem::Update(std::unique_ptr<Registry>& registry, const flo
 
 			pendingPlayerProjectile = false;
 
+			assert(entity.HasComponent<RigidBodyComponent>());
 			const RigidBodyComponent& rigidBody = entity.GetComponent<RigidBodyComponent>();
 			const glm::vec2 playerDirection = rigidBody.velocity != glm::vec2(0)
 											  ? glm::normalize(rigidBody.velocity)
@@ -54,6 +55,9 @@ void ProjectileEmitSystem::Update(std::unique_ptr<Registry>& registry, const flo
 
 			projectileVelocity.x = playerDirection.x * projectileVelocity.x;
 			projectileVelocity.y = playerDirection.y * projectileVelocity.y;
+		}
+		else {
+			glm::vec2 projectilePos = transform.position;
 		}
 
 		glm::vec2 projectilePos = transform.position;
