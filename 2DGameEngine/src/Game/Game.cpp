@@ -240,7 +240,7 @@ void Game::Update()
 	registry->GetSystem<CameraMovementSystem>().Update(camera);
 	registry->GetSystem<ProjectileEmitSystem>().Update(registry, deltaTimeSec);
 	registry->GetSystem<ProjectileLifeCycleSystem>().Update(deltaTimeSec);
-	registry->GetSystem<ScriptSystem>().Update(deltaTimeSec, SDL_GetTicks64());
+	registry->GetSystem<ScriptSystem>().Update(deltaTimeSec, static_cast<double>(SDL_GetTicks64()));
 }
 
 void Game::Render()

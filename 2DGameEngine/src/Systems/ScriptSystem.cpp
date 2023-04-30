@@ -29,8 +29,8 @@ void SetEntityPosition(Entity entity, const double xPos, const double yPos)
 	}
 
 	TransformComponent& transform = entity.GetComponent<TransformComponent>();
-	transform.position.x = xPos;
-	transform.position.y = yPos;
+	transform.position.x = static_cast<float>(xPos);
+	transform.position.y = static_cast<float>(yPos);
 }
 
 std::tuple<double, double> GetEntityVelocity(Entity entity)
@@ -138,7 +138,7 @@ void ScriptSystem::CreateLuaBindings(sol::state& lua)
 	lua.set_function("set_animation_frame", SetEntityAnimationFrame);
 }
 
-void ScriptSystem::Update(const float deltaTime, const uint64_t elapsedtime)
+void ScriptSystem::Update(const float deltaTime, const double elapsedtime)
 {
 	for (Entity entity : GetSystemEntities()) {
 		const ScriptComponent& script = entity.GetComponent<ScriptComponent>();

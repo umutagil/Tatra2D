@@ -2,8 +2,6 @@
 
 #include "../ECS/ECS.h"
 
-#include <SDL_stdinc.h>
-
 namespace sol
 {
 	class state;
@@ -16,7 +14,7 @@ public:
 
 	void CreateLuaBindings(sol::state& lua);
 
-	void Update(const float deltaTime, const uint64_t elapsedtime);
+	void Update(const float deltaTime, const double elapsedtime);
 
 };
 

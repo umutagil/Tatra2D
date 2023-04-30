@@ -197,10 +197,10 @@ void LevelLoader::LoadLevel(sol::state& lua, Registry& registry, AssetStore& ass
 				sprite["texture_asset_id"],
 				sprite["width"],
 				sprite["height"],
-				sprite["z_index"].get_or(0.0f),
+				static_cast<int>(sprite["z_index"].get_or(0)),
 				sprite["fixed"].get_or(false),
-				sprite["src_rect_x"].get_or(0),
-				sprite["src_rect_y"].get_or(0)
+				static_cast<int>(sprite["src_rect_x"].get_or(0)),
+				static_cast<int>(sprite["src_rect_y"].get_or(0))
 			);
 		}
 
@@ -244,9 +244,9 @@ void LevelLoader::LoadLevel(sol::state& lua, Registry& registry, AssetStore& ass
 			const sol::table& projectileEmitter = projectileEmitterOptional.value();
 			newEntity.AddComponent<ProjectileEmitterComponent>(
 				glm::vec2(projectileEmitter["projectile_velocity"]["x"].get_or(0), projectileEmitter["projectile_velocity"]["y"].get_or(0)),
-				projectileEmitter["repeat_frequency"].get_or(0),
-				projectileEmitter["projectile_duration"].get_or(0),
-				projectileEmitter["hit_damage"].get_or(0),
+				projectileEmitter["repeat_frequency"].get_or(0.0f),
+				projectileEmitter["projectile_duration"].get_or(0.0f),
+				static_cast<int>(projectileEmitter["hit_damage"].get_or(0)),
 				projectileEmitter["friendly"].get_or(false)
 			);
 		}

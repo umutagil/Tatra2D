@@ -55,8 +55,8 @@ void HealthDisplaySystem::Update(SDL_Renderer& renderer, const AssetStore& asset
 		SDL_Texture* texture = SDL_CreateTextureFromSurface(&renderer, surface);
 		SDL_FreeSurface(surface);
 
-		const int textPosX = transform.position.x + textOffset.x - camera.x;
-		const int textPosY = transform.position.y - (sprite.height * transform.scale.y / 2.0f) + textOffset.y - camera.y;
+		const int textPosX = static_cast<int>(transform.position.x) + textOffset.x - camera.x;
+		const int textPosY = static_cast<int>(transform.position.y) - static_cast<int>(sprite.height * transform.scale.y / 2.0f) + textOffset.y - camera.y;
 
 		int labelWidth = 0, labelHeight = 0;
 		SDL_QueryTexture(texture, nullptr, nullptr, &labelWidth, &labelHeight);
@@ -66,15 +66,15 @@ void HealthDisplaySystem::Update(SDL_Renderer& renderer, const AssetStore& asset
 
 		// Draw health bar frame
 
-		const int barPosX = transform.position.x + healthBarOffset.x - camera.x;
-		const int barPosY = transform.position.y - (sprite.height * transform.scale.y / 2.0f) + healthBarOffset.y - camera.y;
+		const int barPosX = static_cast<int>(transform.position.x) + healthBarOffset.x - camera.x;
+		const int barPosY = static_cast<int>(transform.position.y - (sprite.height * (transform.scale.y / 2.0f)) + healthBarOffset.y - camera.y);
 		const SDL_Rect healthBarFrameRect = { barPosX, barPosY, healthBarDimensions.x, healthBarDimensions.y };
 		SDL_RenderDrawRect(&renderer, &healthBarFrameRect);
 
 		// Draw filled part of the health bar
 
 		SDL_Rect healthBarRect = healthBarFrameRect;
-		healthBarRect.w *= healthRatio;
+		healthBarRect.w *= static_cast<int>(healthRatio);
 		SDL_RenderFillRect(&renderer, &healthBarRect);
 
 		// Cleanup texture

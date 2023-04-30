@@ -13,7 +13,7 @@ struct ProjectileComponent
 	}
 
 	int hitDamage;
-	unsigned projectileDurationS;
+	float projectileDurationS;
 	bool isFriendly;
 	float lifeTime;
 };

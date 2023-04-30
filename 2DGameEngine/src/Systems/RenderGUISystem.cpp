@@ -57,7 +57,7 @@ void RenderGUISystem::Update(Registry& registry, const SDL_Rect& camera)
 		static float projectileAngle = 0;
 		static float repeatFrequencyS = 0.0f;
 		static float projectileDuration = 0.0f;
-		static int hitDamage = 0.0f;
+		static int hitDamage = 0;
 		if (ImGui::CollapsingHeader("Projectile", ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGui::SliderFloat("speed (px/sec)", &projectileSpeed, 10.0f, 200.0f);
 			ImGui::SliderAngle("angle", &projectileAngle, 0, 360);
