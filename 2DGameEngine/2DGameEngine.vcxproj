@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\TatraEngine\2DGameEngine\2DGameEngine\libs;D:\SDL2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\TatraEngine\2DGameEngine\2DGameEngine\libs\lua;D:\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\TatraEngine\2DGameEngine\2DGameEngine\libs;D:\TatraEngine\2DGameEngine\2DGameEngine\libs\lua;D:\SDL2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\TatraEngine\2DGameEngine\2DGameEngine\libs\lua;D:\TatraEngine\2DGameEngine\2DGameEngine\libs\sol;D:\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -144,12 +144,14 @@
     <ClInclude Include="src\Components\KeyboardControlComponent.h" />
     <ClInclude Include="src\Components\ProjectileComponent.h" />
     <ClInclude Include="src\Components\ProjectileEmitterComponent.h" />
+    <ClInclude Include="src\Components\ScriptComponent.h" />
     <ClInclude Include="src\Components\SpriteComponent.h" />
     <ClInclude Include="src\Components\TextLabelComponent.h" />
     <ClInclude Include="src\EventBus\Event.h" />
     <ClInclude Include="src\EventBus\EventBus.h" />
     <ClInclude Include="src\Events\CollisionEvent.h" />
     <ClInclude Include="src\Events\KeyPressedEvent.h" />
+    <ClInclude Include="src\Game\LevelLoader.h" />
     <ClInclude Include="src\Math\Intersection.h" />
     <ClInclude Include="src\Systems\AnimationSystem.h" />
     <ClInclude Include="src\Systems\CameraMovementSystem.h" />
@@ -422,6 +424,7 @@
     <ClInclude Include="libs\sol\sol.hpp" />
     <ClInclude Include="src\Components\TransformComponent.h" />
     <ClInclude Include="src\Systems\RenderTextSystem.h" />
+    <ClInclude Include="src\Systems\ScriptSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="libs\glm\detail\func_common.inl" />
@@ -563,6 +566,7 @@
     <ClCompile Include="libs\imgui\imgui_tables.cpp" />
     <ClCompile Include="src\AssetStore\AssetStore.cpp" />
     <ClCompile Include="src\EventBus\EventBus.cpp" />
+    <ClCompile Include="src\Game\LevelLoader.cpp" />
     <ClCompile Include="src\Systems\AnimationSystem.cpp" />
     <ClCompile Include="src\Systems\CameraMovementSystem.cpp" />
     <ClCompile Include="src\Systems\CollisionSystem.cpp" />
@@ -585,6 +589,7 @@
     <ClCompile Include="libs\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Systems\RenderTextSystem.cpp" />
+    <ClCompile Include="src\Systems\ScriptSystem.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

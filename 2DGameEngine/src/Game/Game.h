@@ -4,6 +4,7 @@
 #include <memory>
 
 #include <SDL_rect.h>
+#include <sol/sol.hpp>
 
 #include "../ECS/ECS.h"
 
@@ -33,9 +34,6 @@ public:
 	void Render();
 
 private:
-	void LoadLevel(const unsigned level);
-	void LoadTileMap();
-	void CreateCharacters();
 	void InitializeCamera();
 
 public:
@@ -52,6 +50,8 @@ private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	SDL_Rect camera;
+
+	sol::state lua;
 
 	std::unique_ptr<Registry> registry;
 	std::unique_ptr<AssetStore> assetStore;
