@@ -22,7 +22,7 @@ void RenderGUISystem::Update(Registry& registry, const SDL_Rect& camera)
 
 		// Sprite asset Id
 
-		const char* spriteAssetIds[] = { "tank-image", "truck-image" };
+		const char* spriteAssetIds[] = { "tank-texture", "truck-texture" };
 		static int item_current_idx = 0; // Here we store our selection data as an index.
 		const char* combo_preview_value = spriteAssetIds[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
 		if (ImGui::CollapsingHeader("Sprite", ImGuiTreeNodeFlags_DefaultOpen)) {

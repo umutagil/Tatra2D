@@ -110,7 +110,7 @@ void ProjectileEmitSystem::CreateProjectile(const ProjectileInfo& info, std::uni
 	projectile.AddComponent<TransformComponent>(info.position, info.scale);
 	projectile.AddComponent<RigidBodyComponent>(info.velocity);
 	projectile.AddComponent<ProjectileComponent>(info.hitDamage, info.durationS, info.isFriendly);
-	projectile.AddComponent<SpriteComponent>("bullet-image", 4, 4, 4 /* zIndex */);
+	projectile.AddComponent<SpriteComponent>("bullet-texture", 4, 4, 4 /* zIndex */);
 	projectile.AddComponent<BoxColliderComponent>(4, 4);
 }
 
