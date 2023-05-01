@@ -152,18 +152,22 @@
     <ClInclude Include="src\Events\CollisionEvent.h" />
     <ClInclude Include="src\Events\KeyPressedEvent.h" />
     <ClInclude Include="src\Game\BaseController.h" />
+    <ClInclude Include="src\Game\EditorController.h" />
     <ClInclude Include="src\Game\GameController.h" />
     <ClInclude Include="src\Game\LevelLoader.h" />
+    <ClInclude Include="src\Game\SceneManager.h" />
     <ClInclude Include="src\Math\Intersection.h" />
     <ClInclude Include="src\Systems\AnimationSystem.h" />
     <ClInclude Include="src\Systems\CameraMovementSystem.h" />
     <ClInclude Include="src\Systems\CollisionSystem.h" />
     <ClInclude Include="src\Systems\DamageSystem.h" />
     <ClInclude Include="src\Systems\DebugRenderSystem.h" />
+    <ClInclude Include="src\Systems\RenderEditorGUISystem.h" />
     <ClInclude Include="src\Systems\HealthDisplaySystem.h" />
     <ClInclude Include="src\Systems\KeyboardControlSystem.h" />
     <ClInclude Include="src\Systems\ProjectileEmitSystem.h" />
     <ClInclude Include="src\Systems\ProjectileLifeCycleSystem.h" />
+    <ClInclude Include="src\Systems\RenderEditorSystem.h" />
     <ClInclude Include="src\Systems\RenderGUISystem.h" />
     <ClInclude Include="src\Systems\RenderSystem.h" />
     <ClInclude Include="src\Components\RigidBodyComponent.h" />
@@ -427,6 +431,7 @@
     <ClInclude Include="src\Components\TransformComponent.h" />
     <ClInclude Include="src\Systems\RenderTextSystem.h" />
     <ClInclude Include="src\Systems\ScriptSystem.h" />
+    <ClInclude Include="src\Utilities\FileDialog.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="libs\glm\detail\func_common.inl" />
@@ -569,17 +574,21 @@
     <ClCompile Include="src\AssetStore\AssetStore.cpp" />
     <ClCompile Include="src\EventBus\EventBus.cpp" />
     <ClCompile Include="src\Game\BaseController.cpp" />
+    <ClCompile Include="src\Game\EditorController.cpp" />
     <ClCompile Include="src\Game\GameController.cpp" />
     <ClCompile Include="src\Game\LevelLoader.cpp" />
+    <ClCompile Include="src\Game\SceneManager.cpp" />
     <ClCompile Include="src\Systems\AnimationSystem.cpp" />
     <ClCompile Include="src\Systems\CameraMovementSystem.cpp" />
     <ClCompile Include="src\Systems\CollisionSystem.cpp" />
     <ClCompile Include="src\Systems\DamageSystem.cpp" />
     <ClCompile Include="src\Systems\DebugRenderSystem.cpp" />
+    <ClCompile Include="src\Systems\RenderEditorGUISystem.cpp" />
     <ClCompile Include="src\Systems\HealthDisplaySystem.cpp" />
     <ClCompile Include="src\Systems\KeyboardControlSystem.cpp" />
     <ClCompile Include="src\Systems\ProjectileEmitSystem.cpp" />
     <ClCompile Include="src\Systems\ProjectileLifeCycleSystem.cpp" />
+    <ClCompile Include="src\Systems\RenderEditorSystem.cpp" />
     <ClCompile Include="src\Systems\RenderGUISystem.cpp" />
     <ClCompile Include="src\Systems\RenderSystem.cpp" />
     <ClCompile Include="src\ECS\ECS.cpp" />

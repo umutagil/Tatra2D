@@ -39,6 +39,7 @@
 #include "LevelLoader.h"
 
 #include "GameController.h"
+#include "EditorController.h"
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -93,9 +94,8 @@ void Game::Initialize()
 		Logger::Err("Error getting current display mode.");
 	}
 
-	windowWidth = displayMode.w;
-	windowHeight = displayMode.h;
-
+	/*windowWidth = displayMode.w;
+	windowHeight = displayMode.h;*/
 	windowWidth = 1200;
 	windowHeight = 900;
 
@@ -113,11 +113,13 @@ void Game::Initialize()
 		return;
 	}
 
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if (!renderer) {
 		Logger::Err("Error creating SDL renderer.");
 		return;
 	}
+
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
@@ -128,7 +130,8 @@ void Game::Initialize()
 
 	InitializeCamera();
 
-	controller = std::make_unique<GameController>(*this, *registry);
+	//controller = std::make_unique<GameController>(*this, *registry);
+	controller = std::make_unique<EditorController>(*this, *registry);
 
 	isRunning = true;
 }
