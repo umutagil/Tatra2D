@@ -67,14 +67,14 @@ void HealthDisplaySystem::Update(SDL_Renderer& renderer, const AssetStore& asset
 		// Draw health bar frame
 
 		const int barPosX = static_cast<int>(transform.position.x) + healthBarOffset.x - camera.x;
-		const int barPosY = static_cast<int>(transform.position.y - (sprite.height * (transform.scale.y / 2.0f)) + healthBarOffset.y - camera.y);
+		const int barPosY = static_cast<int>(transform.position.y - (sprite.height * transform.scale.y / 2.0f) + healthBarOffset.y - camera.y);
 		const SDL_Rect healthBarFrameRect = { barPosX, barPosY, healthBarDimensions.x, healthBarDimensions.y };
 		SDL_RenderDrawRect(&renderer, &healthBarFrameRect);
 
 		// Draw filled part of the health bar
 
 		SDL_Rect healthBarRect = healthBarFrameRect;
-		healthBarRect.w *= static_cast<int>(healthRatio);
+		healthBarRect.w = static_cast<int>(healthBarRect.w * healthRatio);
 		SDL_RenderFillRect(&renderer, &healthBarRect);
 
 		// Cleanup texture
