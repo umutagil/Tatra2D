@@ -151,6 +151,8 @@
     <ClInclude Include="src\EventBus\EventBus.h" />
     <ClInclude Include="src\Events\CollisionEvent.h" />
     <ClInclude Include="src\Events\KeyPressedEvent.h" />
+    <ClInclude Include="src\Game\BaseController.h" />
+    <ClInclude Include="src\Game\GameController.h" />
     <ClInclude Include="src\Game\LevelLoader.h" />
     <ClInclude Include="src\Math\Intersection.h" />
     <ClInclude Include="src\Systems\AnimationSystem.h" />
@@ -566,6 +568,8 @@
     <ClCompile Include="libs\imgui\imgui_tables.cpp" />
     <ClCompile Include="src\AssetStore\AssetStore.cpp" />
     <ClCompile Include="src\EventBus\EventBus.cpp" />
+    <ClCompile Include="src\Game\BaseController.cpp" />
+    <ClCompile Include="src\Game\GameController.cpp" />
     <ClCompile Include="src\Game\LevelLoader.cpp" />
     <ClCompile Include="src\Systems\AnimationSystem.cpp" />
     <ClCompile Include="src\Systems\CameraMovementSystem.cpp" />

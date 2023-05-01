@@ -38,6 +38,8 @@
 
 #include "LevelLoader.h"
 
+#include "GameController.h"
+
 #include <SDL.h>
 #include <SDL_image.h>
 #include <glm/glm.hpp>
@@ -54,14 +56,14 @@ int Game::mapHeight;
 
 Game::Game()
 	: isRunning(false)
-	, milisecsPreviousFrame(0)
+	, elapsedTimeMs(0)
 	, window(nullptr)
 	, renderer(nullptr)
 	, camera()
 	, registry()
 	, assetStore()
 	, eventBus()
-	, isDebugModeOn(false)
+	, controller()
 {
 	Logger::Log("Game constructor called.");
 
@@ -126,6 +128,8 @@ void Game::Initialize()
 
 	InitializeCamera();
 
+	controller = std::make_unique<GameController>(*this, *registry);
+
 	isRunning = true;
 }
 
@@ -158,6 +162,8 @@ void Game::ProcessInput()
 	{
 		ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
 
+		controller->HandleEvent(sdlEvent);
+
 		switch (sdlEvent.type) {
 			case SDL_QUIT:
 				isRunning = false;
@@ -166,14 +172,8 @@ void Game::ProcessInput()
 				if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
 					isRunning = false;
 				}
-				else if (sdlEvent.key.keysym.sym == SDLK_d) {
-					isDebugModeOn = !isDebugModeOn;
-				}
-
-				eventBus->EmitEvents<KeyPressedEvent>(sdlEvent.key.keysym.sym);
-			}
-
 				break;
+			}
 			default:
 				break;
 		}
@@ -182,65 +182,26 @@ void Game::ProcessInput()
 
 void Game::Setup()
 {
-	// Add systems
-	registry->AddSystem<MovementSystem>();
-	registry->AddSystem<RenderSystem>();
-	registry->AddSystem<DebugRenderSystem>();
-	registry->AddSystem<RenderGUISystem>();
-	registry->AddSystem<RenderTextSystem>();
-	registry->AddSystem<AnimationSystem>();
-	registry->AddSystem<CollisionSystem>();
-	registry->AddSystem<DamageSystem>();
-	registry->AddSystem<KeyboardControlSystem>();
-	registry->AddSystem<CameraMovementSystem>();
-	registry->AddSystem<ProjectileEmitSystem>();
-	registry->AddSystem<ProjectileLifeCycleSystem>();
-	registry->AddSystem<HealthDisplaySystem>();
-	registry->AddSystem<ScriptSystem>();
-
-	registry->GetSystem<ScriptSystem>().CreateLuaBindings(lua);
-
-	lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::os);
-	LevelLoader levelLoader;
-	levelLoader.LoadLevel(lua, *registry, *assetStore, *renderer, 2);
+	controller->Initialize(*renderer, lua);
 }
 
 void Game::Update()
 {
 	// If we are running faster than FPS, then waste some time by yielding to match FPS.
-	const Uint64 deltaTimeMilisec = SDL_GetTicks64() - milisecsPreviousFrame;
-	if (deltaTimeMilisec < MILISEC_PER_FRAME) {
-		const Uint32 timeToWait = static_cast<Uint32>(MILISEC_PER_FRAME - deltaTimeMilisec);
+	unsigned deltaTimeMs = static_cast<unsigned>(SDL_GetTicks64() - elapsedTimeMs);
+	if (deltaTimeMs < MILISEC_PER_FRAME) {
+		const Uint32 timeToWait = static_cast<Uint32>(MILISEC_PER_FRAME - deltaTimeMs);
 		SDL_Delay(timeToWait);
 	}
 	
-	float deltaTimeSec = (SDL_GetTicks64() - milisecsPreviousFrame) / 1000.0f;
-	milisecsPreviousFrame = SDL_GetTicks64();
+	deltaTimeMs = static_cast<unsigned>(SDL_GetTicks64() - elapsedTimeMs);
+	elapsedTimeMs = SDL_GetTicks64();
 
-	if (deltaTimeSec > FRAME_LIMITER_MAX_DELTA_TIME) {
-		deltaTimeSec = FRAME_LIMITER_MAX_DELTA_TIME;
+	if (deltaTimeMs > FRAME_LIMITER_MAX_DELTA_TIME) {
+		deltaTimeMs = FRAME_LIMITER_MAX_DELTA_TIME;
 	}
 
-	// Reset all the event handlers
-	eventBus->Reset();
-
-	// Subscribe to events
-	registry->GetSystem<DamageSystem>().SubscribeToEvents(*eventBus);
-	registry->GetSystem<MovementSystem>().SubscribeToEvents(*eventBus);
-	registry->GetSystem<KeyboardControlSystem>().SubscribeToEvents(*eventBus);
-	registry->GetSystem<ProjectileEmitSystem>().SubscribeToEvents(*eventBus);
-
-	// Update the registry to process pending entities
-	registry->Update();
-
-	// Update all systems
-	registry->GetSystem<MovementSystem>().Update(deltaTimeSec);
-	registry->GetSystem<AnimationSystem>().Update(deltaTimeSec);
-	registry->GetSystem<CollisionSystem>().Update(*eventBus);
-	registry->GetSystem<CameraMovementSystem>().Update(camera);
-	registry->GetSystem<ProjectileEmitSystem>().Update(registry, deltaTimeSec);
-	registry->GetSystem<ProjectileLifeCycleSystem>().Update(deltaTimeSec);
-	registry->GetSystem<ScriptSystem>().Update(deltaTimeSec, static_cast<double>(SDL_GetTicks64()));
+	controller->Update(deltaTimeMs);
 }
 
 void Game::Render()
@@ -248,16 +209,15 @@ void Game::Render()
 	SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
 	SDL_RenderClear(renderer);
 
-	registry->GetSystem<RenderSystem>().Update(*renderer, *assetStore, camera);
-	registry->GetSystem<RenderTextSystem>().Update(*renderer, *assetStore, camera);
-	registry->GetSystem<HealthDisplaySystem>().Update(*renderer, *assetStore, camera);
-	if (isDebugModeOn) {
-		registry->GetSystem<DebugRenderSystem>().Update(*renderer, camera);
-		registry->GetSystem<RenderGUISystem>().Update(*registry, camera);
-	}
+	controller->Render(*renderer);
 
 	// Render to screen
 	SDL_RenderPresent(renderer);
+}
+
+u64 Game::GetElapsedTime() const
+{
+	return elapsedTimeMs;
 }
 
 void Game::InitializeCamera()

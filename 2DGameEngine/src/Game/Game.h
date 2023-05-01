@@ -1,12 +1,13 @@
 #pragma once
 
-#include <cstdint>
 #include <memory>
 
 #include <SDL_rect.h>
 #include <sol/sol.hpp>
 
 #include "../ECS/ECS.h"
+
+using u64 = unsigned __int64;
 
 const unsigned FPS = 120;
 const unsigned MILISEC_PER_FRAME = 1000 / FPS;
@@ -15,6 +16,7 @@ const unsigned FRAME_LIMITER_MAX_DELTA_TIME = 4 * MILISEC_PER_FRAME; // milisecs
 struct SDL_Window;
 struct SDL_Renderer;
 
+class BaseController;
 class AssetStore;
 class EventBus;
 
@@ -33,6 +35,13 @@ public:
 	void Update();
 	void Render();
 
+	inline sol::state& GetLuaState() { return lua; }
+	inline AssetStore& GetAssetStore() { return *assetStore; }
+	inline EventBus& GetEventBus() { return *eventBus; }
+	inline SDL_Rect& GetCamera() { return camera; }
+
+	u64 GetElapsedTime() const;
+
 private:
 	void InitializeCamera();
 
@@ -44,8 +53,10 @@ public:
 
 private:
 	
+	std::unique_ptr<BaseController> controller;
+
 	bool isRunning;
-	std::uint64_t milisecsPreviousFrame = 0;
+	u64 elapsedTimeMs = 0;
 
 	SDL_Window* window;
 	SDL_Renderer* renderer;
@@ -56,8 +67,6 @@ private:
 	std::unique_ptr<Registry> registry;
 	std::unique_ptr<AssetStore> assetStore;
 	std::unique_ptr<EventBus> eventBus;
-
-	bool isDebugModeOn;
 
 };
 

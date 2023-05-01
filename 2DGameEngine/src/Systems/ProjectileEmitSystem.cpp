@@ -24,7 +24,7 @@ ProjectileEmitSystem::ProjectileEmitSystem()
 }
 
 // TODO: Maybe find a cleaner way than sending registry as parameter.
-void ProjectileEmitSystem::Update(std::unique_ptr<Registry>& registry, const float deltaTime)
+void ProjectileEmitSystem::Update(Registry& registry, const float deltaTime)
 {
 	for (Entity& entity : GetSystemEntities()) {
 
@@ -107,9 +107,9 @@ void ProjectileEmitSystem::OnKeyPressed(KeyPressedEvent& event)
 	}
 }
 
-void ProjectileEmitSystem::CreateProjectile(const ProjectileInfo& info, std::unique_ptr<Registry>& registry)
+void ProjectileEmitSystem::CreateProjectile(const ProjectileInfo& info, Registry& registry)
 {
-	Entity projectile = registry->CreateEntity();
+	Entity projectile = registry.CreateEntity();
 	projectile.Group("projectiles");
 	projectile.AddComponent<TransformComponent>(info.position, info.scale);
 	projectile.AddComponent<RigidBodyComponent>(info.velocity);

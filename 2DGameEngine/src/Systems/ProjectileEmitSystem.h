@@ -42,14 +42,14 @@ class ProjectileEmitSystem : public System
 public:
 	ProjectileEmitSystem();
 
-	void Update(std::unique_ptr<Registry>& registry, const float deltaTime);
+	void Update(Registry& registry, const float deltaTime);
 
 	void SubscribeToEvents(EventBus& eventBus);
 
 private:
 	void OnKeyPressed(KeyPressedEvent& event);
 
-	void CreateProjectile(const ProjectileInfo& info, std::unique_ptr<Registry>& registry);
+	void CreateProjectile(const ProjectileInfo& info, Registry& registry);
 
 private:
 	bool pendingPlayerProjectile;
