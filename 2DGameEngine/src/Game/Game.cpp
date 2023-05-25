@@ -94,10 +94,10 @@ void Game::Initialize()
 		Logger::Err("Error getting current display mode.");
 	}
 
-	/*windowWidth = displayMode.w;
-	windowHeight = displayMode.h;*/
-	windowWidth = 1200;
-	windowHeight = 900;
+	windowWidth = displayMode.w;
+	windowHeight = displayMode.h;
+	/*windowWidth = 1200;
+	windowHeight = 900;*/
 
 	window = SDL_CreateWindow(
 		nullptr,
