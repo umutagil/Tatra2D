@@ -3,8 +3,6 @@
 #include "../Logger/Logger.h"
 #include <cassert>
 
-// TODO: implementation
-
 unsigned IComponent::nextId = 0;
 
 Entity::Entity(const unsigned the_id)
@@ -16,7 +14,7 @@ Entity::Entity(const unsigned the_id)
 void Entity::Kill()
 {
     registry->KillEntity(*this);
-    //Logger::Log("Entity (" + std::to_string(id) + ") got destroyed.");
+    Logger::Log("Entity (" + std::to_string(id) + ") got destroyed.");
 }
 
 void Entity::Tag(const std::string& tag)
@@ -41,6 +39,7 @@ bool Entity::BelongsToGroup(const std::string& group) const
 
 void System::AddEntityToSystem(const Entity entity)
 {
+    //Logger::Log("Entity (" + std::to_string(entity.GetId()) + ") added to system.");
     entities.push_back(entity);
 }
 
