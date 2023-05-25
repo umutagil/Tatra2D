@@ -39,8 +39,10 @@ public:
 	inline AssetStore& GetAssetStore() { return *assetStore; }
 	inline EventBus& GetEventBus() { return *eventBus; }
 	inline SDL_Rect& GetCamera() { return camera; }
+	inline void SetCamera(SDL_Rect newCamera) { camera = newCamera; }
 
 	u64 GetElapsedTime() const;
+
 
 private:
 	void InitializeCamera();

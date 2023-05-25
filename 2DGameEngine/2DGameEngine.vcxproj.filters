@@ -912,6 +912,9 @@
     <ClInclude Include="src\Game\SceneManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Systems\MapEditSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\Utilities\Geometry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1418,6 +1421,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\SceneManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Systems\MapEditSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Events\MouseEvents.h">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Utilities\Geometry.cpp">

@@ -19,7 +19,7 @@ public:
 	void Update(SceneManager& sceneManager, SDL_Renderer& renderer, AssetStore& assetStore, const SDL_Rect& camera);
 
 private:
-	void DisplayLoadedTileset(AssetStore& assetStore);
+	void DisplayLoadedTileset(SceneManager& sceneManager, AssetStore& assetStore);
 
 
 private:

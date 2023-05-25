@@ -17,11 +17,13 @@
 #include "../Systems/RenderTextSystem.h"
 #include "../Systems/RenderEditorGUISystem.h"
 #include "../Systems/ScriptSystem.h"
+#include "../Systems/MapEditSystem.h"
 
 #include "LevelLoader.h"
 
 #include "../EventBus/EventBus.h"
 #include "../Events/KeyPressedEvent.h"
+#include "../Events/MouseEvents.h"
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -33,12 +35,14 @@
 
 EditorController::EditorController(Game& game, Registry& registry)
 	: BaseController(game, registry)
-	, sceneManager()
+	, sceneManager(registry, game.GetCamera())
 {
 }
 
 void EditorController::Initialize(SDL_Renderer& renderer, sol::state& lua)
 {
+	InitializeCamera();
+
 	AssetStore& assetStore = game.GetAssetStore();
 
 	// Add systems
@@ -48,6 +52,7 @@ void EditorController::Initialize(SDL_Renderer& renderer, sol::state& lua)
 	registry.AddSystem<KeyboardControlSystem>();
 	registry.AddSystem<CameraMovementSystem>();
 	registry.AddSystem<ScriptSystem>();
+	registry.AddSystem<MapEditSystem>(sceneManager);
 
 	registry.GetSystem<ScriptSystem>().CreateLuaBindings(lua);
 
@@ -56,6 +61,22 @@ void EditorController::Initialize(SDL_Renderer& renderer, sol::state& lua)
 
 void EditorController::HandleEvent(SDL_Event& sdlEvent)
 {
+	switch (sdlEvent.type) {
+		case SDL_MOUSEBUTTONDOWN: {
+			EventBus& eventBus = game.GetEventBus();
+			eventBus.EmitEvents<MouseButtonEvent>(sdlEvent.button);
+			break;
+		}
+
+		case SDL_MOUSEMOTION: {
+			EventBus& eventBus = game.GetEventBus();
+			eventBus.EmitEvents<MouseMotionEvent>(sdlEvent.motion);
+		}
+
+		default:
+			break;
+	}
+
 }
 
 void EditorController::Update(const unsigned deltaTimeMs)
@@ -68,6 +89,7 @@ void EditorController::Update(const unsigned deltaTimeMs)
 
 	// Subscribe to events
 	registry.GetSystem<KeyboardControlSystem>().SubscribeToEvents(eventBus);
+	registry.GetSystem<MapEditSystem>().SubscribeToEvents(eventBus);
 
 	// Update the registry to process pending entities
 	registry.Update();
@@ -85,4 +107,9 @@ void EditorController::Render(SDL_Renderer& renderer)
 	registry.GetSystem<RenderEditorSystem>().Update(sceneManager, renderer, assetStore, camera);
 	registry.GetSystem<RenderTextSystem>().Update(renderer, assetStore, camera);
 	registry.GetSystem<RenderEditorGUISystem>().Update(sceneManager, renderer, assetStore, camera);
+}
+
+void EditorController::InitializeCamera()
+{
+	game.SetCamera({ -200 , -200 , game.windowWidth, game.windowHeight });
 }

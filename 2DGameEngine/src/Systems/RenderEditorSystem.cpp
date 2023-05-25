@@ -22,11 +22,7 @@ RenderEditorSystem::RenderEditorSystem()
 
 void RenderEditorSystem::Update(SceneManager& sceneManager, SDL_Renderer& renderer, const AssetStore& assetStore, const SDL_Rect& camera)
 {
-	DrawGrid(renderer);
-
-	if (sceneManager.HasActiveTile()) {
-		DrawSelectedTile(sceneManager, renderer, assetStore, camera);
-	}
+	DrawGrid(sceneManager, renderer, camera);
 
 	// Sort the entities according to zIndex
 	std::vector<Entity> entitiesSorted(GetSystemEntities());
@@ -70,6 +66,9 @@ void RenderEditorSystem::Update(SceneManager& sceneManager, SDL_Renderer& render
 		);
 	}
 
+	if (sceneManager.HasActiveTile()) {
+		DrawSelectedTile(sceneManager, renderer, assetStore, camera);
+	}
 }
 
 void RenderEditorSystem::DrawSelectedTile(SceneManager& sceneManager, SDL_Renderer& renderer, const AssetStore& assetStore, const SDL_Rect& camera)
@@ -77,7 +76,9 @@ void RenderEditorSystem::DrawSelectedTile(SceneManager& sceneManager, SDL_Render
 	int mouseX, mouseY;
 	SDL_GetMouseState(&mouseX, &mouseY);
 
+	const GridProperties& gridProperties = sceneManager.GetGridProperties();
 	const TileProperties& tileProperties = sceneManager.GetActiveTile();
+	const glm::ivec2 tilePosScreen = sceneManager.WorldToScreen(tileProperties.posWorld);
 
 	const SDL_Rect srcRect = {
 			tileProperties.uvX,
@@ -87,10 +88,10 @@ void RenderEditorSystem::DrawSelectedTile(SceneManager& sceneManager, SDL_Render
 	};
 
 	const SDL_Rect destRect = {
-			mouseX,
-			mouseY,
-			tileProperties.width,
-			tileProperties.height
+		tilePosScreen.x,
+		tilePosScreen.y,
+		tileProperties.width,
+		tileProperties.height
 	};
 
 	SDL_RenderCopyEx(
@@ -105,27 +106,19 @@ void RenderEditorSystem::DrawSelectedTile(SceneManager& sceneManager, SDL_Render
 
 }
 
-void RenderEditorSystem::DrawGrid(SDL_Renderer& renderer)
+void RenderEditorSystem::DrawGrid(const SceneManager& sceneManager, SDL_Renderer& renderer, const SDL_Rect& camera)
 {
+	const GridProperties& gridProperties = sceneManager.GetGridProperties();
 
-	const glm::ivec2 startPos(200, 100);
-	const unsigned cellCountX = 10;
-	const unsigned cellCountY = 10;
-	const unsigned cellWidth = 64;
-	const unsigned cellHeight = 64;
+	for (size_t i = 0; i < gridProperties.cellCountY; ++i) {
+		for (size_t j = 0; j < gridProperties.cellCountX; ++j) {
 
-	const SDL_Color whiteCellColor = { 200, 200, 200, 70 };
-	const SDL_Color coloredCellColor = { 20, 200, 230, 70 };
-	SDL_Color currentCellColor = coloredCellColor;
+			const int xPosWorld = gridProperties.startPos.x + (j * gridProperties.cellSize);
+			const int yPosWorld = gridProperties.startPos.y + (i * gridProperties.cellSize);
+			const glm::ivec2 posScreen = sceneManager.WorldToScreen({ xPosWorld, yPosWorld });
+			const SDL_Rect cell = { posScreen.x, posScreen.y, gridProperties.cellSize, gridProperties.cellSize};
 
-	for (size_t i = 0; i < cellCountY; ++i) {
-		for (size_t j = 0; j < cellCountX; ++j) {
-
-			const int xPos = startPos.x + (j * cellWidth);
-			const int yPos = startPos.y + (i * cellHeight);
-			const SDL_Rect cell = { xPos, yPos, cellWidth, cellHeight};
-
-			currentCellColor = ((i + j) % 2) ? coloredCellColor : whiteCellColor;
+			const SDL_Color& currentCellColor = ((i + j) % 2) ? gridProperties.cellColor1 : gridProperties.cellColor2;
 			SetRenderDrawColor(renderer, currentCellColor);
 			SDL_RenderDrawRect(&renderer, &cell);
 			SDL_RenderFillRect(&renderer, &cell);

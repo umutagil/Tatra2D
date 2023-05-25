@@ -5,6 +5,7 @@
 #include <imgui/imgui_impl_sdl2.h>
 #include <imgui/imgui_impl_sdlrenderer.h>
 #include <filesystem>
+#include <algorithm>
 
 #include "../AssetStore/AssetStore.h"
 #include "../Game/SceneManager.h"
@@ -37,9 +38,6 @@ void RenderEditorGUISystem::Update(SceneManager& sceneManager, SDL_Renderer& ren
                 if (!SDL_QueryTexture(assetStore.GetTexture(assetId), nullptr, nullptr, &tileMapWidth, &tileMapHeight)) {
                     activeTilesetId = assetId;
                     activeTilesetDimensions = { tileMapWidth, tileMapHeight };
-
-                    // TODO: Should be done when grid from the texture is selected with mouse
-                    sceneManager.SetActiveTile({ 0, 0, 32, 32, assetId });
                 }
             }
 
@@ -49,9 +47,11 @@ void RenderEditorGUISystem::Update(SceneManager& sceneManager, SDL_Renderer& ren
         ImGui::EndMainMenuBar();
 	}
     
+
+
     bool isImageLoaded = !activeTilesetId.empty();
     if (isImageLoaded) {
-        DisplayLoadedTileset(assetStore);
+        DisplayLoadedTileset(sceneManager, assetStore);
     }
 
 
@@ -59,10 +59,37 @@ void RenderEditorGUISystem::Update(SceneManager& sceneManager, SDL_Renderer& ren
     ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
 }
 
-void RenderEditorGUISystem::DisplayLoadedTileset(AssetStore& assetStore)
+void RenderEditorGUISystem::DisplayLoadedTileset(SceneManager& sceneManager, AssetStore& assetStore)
 {
     if (ImGui::Begin("Texture", NULL, ImGuiWindowFlags_HorizontalScrollbar)) {
         ImGui::Image(assetStore.GetTexture(activeTilesetId), ImVec2(activeTilesetDimensions.x, activeTilesetDimensions.y));
+        const glm::ivec2 mousePos(ImGui::GetMousePos().x, ImGui::GetMousePos().y);
+
+        const int tileSize = 32;
+        const int offsetX = 8, offsetY = 26;
+        const ImVec2 windowPos = ImGui::GetWindowPos();
+        const glm::ivec2 tileStartPos(windowPos.x + offsetX, windowPos.y + offsetY);
+
+        const glm::ivec2 relativeMousePos = mousePos - tileStartPos;
+        const bool isHoverOverTileMap = (relativeMousePos.x >= 0 && relativeMousePos.x <= activeTilesetDimensions.x &&
+                                        relativeMousePos.y >= 0 && relativeMousePos.y <= activeTilesetDimensions.y);
+
+        if (isHoverOverTileMap) {
+            const int tileIdxX = relativeMousePos.x / tileSize;
+            const int tileIdxY = relativeMousePos.y / tileSize;
+
+            ImDrawList* draw_list = ImGui::GetWindowDrawList();
+            const ImVec2 rectMin(tileStartPos.x + (tileIdxX * tileSize), tileStartPos.y + (tileIdxY * tileSize));
+            const ImVec2 rectMax(rectMin.x + tileSize, rectMin.y + tileSize);
+            const ImU32 col = ImColor(10, 255, 10, 255);
+            draw_list->AddRect(rectMin, rectMax, col);
+
+            if (ImGui::IsMouseClicked(0)) {
+                sceneManager.SetActiveTile({ glm::ivec2(0), (tileIdxX * tileSize), (tileIdxY * tileSize), tileSize, tileSize, activeTilesetId });
+            }
+        }
+
+        ImGui::Checkbox("Snap To Grid", &sceneManager.snapToGrid);
 
 
     }

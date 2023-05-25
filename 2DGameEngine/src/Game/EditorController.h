@@ -16,6 +16,9 @@ public:
 
 	void CreateTileEntity();
 
+protected:
+	void InitializeCamera();
+
 private:
 	SceneManager sceneManager;
 

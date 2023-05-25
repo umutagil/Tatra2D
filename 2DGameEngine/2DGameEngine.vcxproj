@@ -162,6 +162,7 @@
     <ClInclude Include="src\Systems\CollisionSystem.h" />
     <ClInclude Include="src\Systems\DamageSystem.h" />
     <ClInclude Include="src\Systems\DebugRenderSystem.h" />
+    <ClInclude Include="src\Systems\MapEditSystem.h" />
     <ClInclude Include="src\Systems\RenderEditorGUISystem.h" />
     <ClInclude Include="src\Systems\HealthDisplaySystem.h" />
     <ClInclude Include="src\Systems\KeyboardControlSystem.h" />
@@ -574,6 +575,7 @@
     <ClCompile Include="libs\imgui\imgui_tables.cpp" />
     <ClCompile Include="src\AssetStore\AssetStore.cpp" />
     <ClCompile Include="src\EventBus\EventBus.cpp" />
+    <ClCompile Include="src\Events\MouseEvents.h" />
     <ClCompile Include="src\Game\BaseController.cpp" />
     <ClCompile Include="src\Game\EditorController.cpp" />
     <ClCompile Include="src\Game\GameController.cpp" />
@@ -584,6 +586,7 @@
     <ClCompile Include="src\Systems\CollisionSystem.cpp" />
     <ClCompile Include="src\Systems\DamageSystem.cpp" />
     <ClCompile Include="src\Systems\DebugRenderSystem.cpp" />
+    <ClCompile Include="src\Systems\MapEditSystem.cpp" />
     <ClCompile Include="src\Systems\RenderEditorGUISystem.cpp" />
     <ClCompile Include="src\Systems\HealthDisplaySystem.cpp" />
     <ClCompile Include="src\Systems\KeyboardControlSystem.cpp" />

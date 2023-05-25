@@ -16,5 +16,5 @@ public:
 	void Update(SceneManager& sceneManager, SDL_Renderer& renderer, const AssetStore& assetStore, const SDL_Rect& camera);
 
 	void DrawSelectedTile(SceneManager& sceneManager, SDL_Renderer& renderer, const AssetStore& assetStore, const SDL_Rect& camera);
-	void DrawGrid(SDL_Renderer& renderer);
+	void DrawGrid(const SceneManager& sceneManager, SDL_Renderer& renderer, const SDL_Rect& camera);
 };
