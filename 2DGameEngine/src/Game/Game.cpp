@@ -132,6 +132,7 @@ void Game::Initialize()
 
 	//controller = std::make_unique<GameController>(*this, *registry);
 	controller = std::make_unique<EditorController>(*this, *registry);
+	controller->Initialize(*renderer, lua);
 
 	isRunning = true;
 }
@@ -149,8 +150,6 @@ void Game::Destroy()
 
 void Game::Run()
 {
-	Setup();
-
 	while (isRunning) {
 		ProcessInput();
 		Update();
@@ -181,11 +180,6 @@ void Game::ProcessInput()
 				break;
 		}
 	}
-}
-
-void Game::Setup()
-{
-	controller->Initialize(*renderer, lua);
 }
 
 void Game::Update()

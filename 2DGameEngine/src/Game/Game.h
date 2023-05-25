@@ -31,7 +31,6 @@ public:
 	void Destroy();
 	void Run();
 	void ProcessInput();
-	void Setup();
 	void Update();
 	void Render();
 
