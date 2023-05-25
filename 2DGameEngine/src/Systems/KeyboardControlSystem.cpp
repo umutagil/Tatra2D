@@ -7,8 +7,6 @@
 #include "../EventBus/EventBus.h"
 #include "../Events/KeyPressedEvent.h"
 
-#include <string>
-
 KeyboardControlSystem::KeyboardControlSystem()
 {
 	RequireComponent<KeyboardControlledComponent>();
