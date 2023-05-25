@@ -432,6 +432,7 @@
     <ClInclude Include="src\Systems\RenderTextSystem.h" />
     <ClInclude Include="src\Systems\ScriptSystem.h" />
     <ClInclude Include="src\Utilities\FileDialog.h" />
+    <ClInclude Include="src\Utilities\Geometry.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="libs\glm\detail\func_common.inl" />
@@ -603,6 +604,7 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Systems\RenderTextSystem.cpp" />
     <ClCompile Include="src\Systems\ScriptSystem.cpp" />
+    <ClCompile Include="src\Utilities\Geometry.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
