@@ -102,7 +102,17 @@ void RenderEditorGUISystem::DisplayLoadedTileset(SceneManager& sceneManager, Ass
 
         ImGui::Checkbox("Snap To Grid", &sceneManager.snapToGrid);
 
+        const GridProperties& grid = sceneManager.GetGridProperties();
+        int cellCountX = grid.cellCountX;
+        int cellCountY = grid.cellCountY;
 
+        if (ImGui::InputInt("Grid Width", &cellCountX, 1, 5)) {
+            sceneManager.SetGridSize(cellCountX, cellCountY);
+        }
+
+        if (ImGui::InputInt("Grid Height", &cellCountY, 1, 5)) {
+            sceneManager.SetGridSize(cellCountX, cellCountY);
+        }
     }
     ImGui::End();
 

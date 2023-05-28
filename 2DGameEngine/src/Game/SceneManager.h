@@ -50,6 +50,7 @@ public:
 	inline glm::ivec2 ScreenToWorld(const glm::ivec2& screenPos) const;
 	inline glm::ivec2 WorldToScreen(const glm::ivec2& worldPos) const;
 
+	inline void SetGridSize(const int numGridsX, const int numGridsY);
 	inline const GridProperties& GetGridProperties() const;
 	inline const TileMapArray& GetTileMapIndices() const;
 
@@ -92,6 +93,12 @@ inline glm::ivec2 SceneManager::ScreenToWorld(const glm::ivec2& screenPos) const
 inline glm::ivec2 SceneManager::WorldToScreen(const glm::ivec2& worldPos) const
 {
 	return glm::ivec2(worldPos.x - camera.x, worldPos.y - camera.y);
+}
+
+inline void SceneManager::SetGridSize(const int numGridsX, const int numGridsY)
+{
+	gridProperties.cellCountX = numGridsX;
+	gridProperties.cellCountY = numGridsY;
 }
 
 inline const GridProperties& SceneManager::GetGridProperties() const
