@@ -81,14 +81,33 @@ void LevelLoader::LoadLevel(sol::state& lua, Registry& registry, AssetStore& ass
 	const sol::table& map = level["tilemap"];
 	const std::string mapFilePath = map["map_file"];
 	const std::string mapTextureAssetId = map["texture_asset_id"];
-	const int tileSize = map["tile_size"];
+	int tileSize = map["tile_size"];
+	int numRows = map["num_rows"];
+	int numCols = map["num_cols"];
 	const float mapScale = map["scale"];
 
 	// Load the map tile index info from map file.
 
-	std::ifstream tileMapFile("./assets/tilemaps/jungle.map");
+	std::ifstream tileMapFile(mapFilePath);
 	std::vector<std::string> indexStringLines;
 	if (tileMapFile.is_open()) {
+
+		std::string firstLine;
+		std::getline(tileMapFile, firstLine);
+		std::stringstream stringStream(firstLine);
+
+		std::string numRowsString;
+		std::getline(stringStream, numRowsString, ',');
+		numRows = std::stoi(numRowsString);
+
+		std::string numColsString;
+		std::getline(stringStream, numColsString, ',');
+		numCols = std::stoi(numColsString);
+		
+		std::string tileSizeString;
+		std::getline(stringStream, tileSizeString, ',');
+		tileSize = std::stoi(tileSizeString);
+
 		while (tileMapFile) {
 			std::string line;
 			std::getline(tileMapFile, line);
@@ -98,13 +117,15 @@ void LevelLoader::LoadLevel(sol::state& lua, Registry& registry, AssetStore& ass
 		}
 	}
 
-	std::vector<std::vector<unsigned>> tileMapIndices(indexStringLines.size());
-	for (size_t i = 0; i < indexStringLines.size(); ++i) {
+	std::vector<std::vector<int>> tileMapIndices(numCols);
+	for (size_t i = 0; i < numCols; ++i) {
 		std::string tileIndex;
 		std::stringstream stringStream(indexStringLines[i]);
-		while (std::getline(stringStream, tileIndex, ',')) {
-			if (!tileIndex.empty()) {
-				tileMapIndices[i].emplace_back(std::stoul(tileIndex));
+		for (size_t j = 0; j < numRows; ++j) {
+			if (std::getline(stringStream, tileIndex, ',')) {
+				if (!tileIndex.empty()) {
+					tileMapIndices[i].emplace_back(std::stoi(tileIndex));
+				}
 			}
 		}
 	}
@@ -121,11 +142,16 @@ void LevelLoader::LoadLevel(sol::state& lua, Registry& registry, AssetStore& ass
 		for (size_t j = 0; j < tileMapIndices[i].size(); ++j) {
 			Entity tile = registry.CreateEntity();
 			tile.Tag("tile");
+			tile.Group("tiles");
 
 			const glm::vec2 tilePos(j * (tileSize * mapScale), i * (tileSize * mapScale));
 			tile.AddComponent<TransformComponent>(tilePos, glm::vec2(mapScale, mapScale), 0.0f);
 
-			const unsigned tileIdx = tileMapIndices[i][j];
+			const int tileIdx = tileMapIndices[i][j];
+			if (tileIdx < 0) {
+				continue;
+			}
+
 			const unsigned column = tileIdx % numTilesInTextureRow;
 			const unsigned row = tileIdx / numTilesInTextureRow;
 			const int srcRectX = tileSize * column;
