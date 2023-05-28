@@ -74,8 +74,7 @@ void GameController::Initialize(SDL_Renderer& renderer, sol::state& lua)
 	registry.GetSystem<ScriptSystem>().CreateLuaBindings(lua);
 
 	lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::os);
-	LevelLoader levelLoader;
-	levelLoader.LoadLevel(lua, registry, assetStore, renderer, 2);
+	LevelLoader::LoadLevel(lua, registry, assetStore, renderer, 1);
 }
 
 void GameController::HandleEvent(SDL_Event& sdlEvent)

@@ -16,7 +16,7 @@ public:
 	LevelLoader();
 	~LevelLoader();
 
-	void LoadLevel(sol::state& lua, Registry& registry, AssetStore& assetStore, SDL_Renderer& renderer, const int levelIndex);
+	static void LoadLevel(sol::state& lua, Registry& registry, AssetStore& assetStore, SDL_Renderer& renderer, const int levelIndex);
 };
 
 
