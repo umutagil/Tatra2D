@@ -106,7 +106,7 @@ void EditorController::Render(SDL_Renderer& renderer)
 
 	registry.GetSystem<RenderEditorSystem>().Update(sceneManager, renderer, assetStore, camera);
 	registry.GetSystem<RenderTextSystem>().Update(renderer, assetStore, camera);
-	registry.GetSystem<RenderEditorGUISystem>().Update(sceneManager, renderer, assetStore, camera);
+	registry.GetSystem<RenderEditorGUISystem>().Update(registry, sceneManager, renderer, assetStore);
 }
 
 void EditorController::InitializeCamera()

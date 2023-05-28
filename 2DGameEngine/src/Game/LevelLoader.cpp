@@ -4,6 +4,7 @@
 #include "../AssetStore/AssetStore.h"
 #include "Game.h"
 #include "../Logger/Logger.h"
+#include "../Game/SceneManager.h"
 
 #include "../Components/TransformComponent.h"
 #include "../Components/RigidBodyComponent.h"
@@ -24,6 +25,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <assert.h>
 
 LevelLoader::LevelLoader()
 {
@@ -291,4 +293,33 @@ void LevelLoader::LoadLevel(sol::state& lua, Registry& registry, AssetStore& ass
 	SDL_Color labelColor = { 10, 220, 200 };
 	const bool isLabelFixed = true;
 	label.AddComponent<TextLabelComponent>(glm::vec2(Game::windowWidth / 2 - 100, 10), "Iyi Bayramlar!", "charriot-font", labelColor, isLabelFixed);*/
+}
+
+void LevelLoader::SaveMap(const std::string& mapFileName, Registry& registry, SceneManager& sceneManager)
+{
+	std::ofstream file(mapFileName);
+	if (!file.is_open()) {
+		Logger::Log("Could not open the file: " + mapFileName);
+		return;
+	}
+
+	const GridProperties grid = sceneManager.GetGridProperties();
+	file << grid.cellCountX << "," << grid.cellCountY << "," << grid.cellSize << std::endl;
+
+	const auto tileMapIndices = sceneManager.GetTileMapIndices();
+
+	for (size_t yIdx = 0; yIdx < tileMapIndices.size(); ++yIdx) {
+		for (size_t xIdx = 0; xIdx < tileMapIndices[yIdx].size(); ++xIdx) {
+			file << tileMapIndices[yIdx][xIdx];
+			if (xIdx < tileMapIndices[yIdx].size() - 1) {
+				file << ",";
+			}
+		}
+
+		file << std::endl;
+	} 
+
+	file.close();
+
+	Logger::Log("Map saved: " + mapFileName);
 }

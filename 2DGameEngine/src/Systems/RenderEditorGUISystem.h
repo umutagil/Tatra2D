@@ -16,7 +16,7 @@ class RenderEditorGUISystem : public System
 public:
 	RenderEditorGUISystem() = default;
 
-	void Update(SceneManager& sceneManager, SDL_Renderer& renderer, AssetStore& assetStore, const SDL_Rect& camera);
+	void Update(Registry& registry, SceneManager& sceneManager, SDL_Renderer& renderer, AssetStore& assetStore);
 
 private:
 	void DisplayLoadedTileset(SceneManager& sceneManager, AssetStore& assetStore);

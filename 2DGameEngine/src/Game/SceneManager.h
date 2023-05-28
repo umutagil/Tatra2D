@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <string>
 #include <glm/glm.hpp>
 #include <SDL.h>
@@ -13,6 +14,7 @@ struct TileProperties
 	int uvY;
 	int width;
 	int height;
+	int srcIndexLinear;
 	std::string assetId;
 };
 
@@ -35,6 +37,8 @@ struct GridProperties
 class SceneManager
 {
 public:
+	using TileMapArray = std::vector<std::vector<int>>;
+
 	SceneManager(Registry& registry, const SDL_Rect& camera);
 
 	void SetActiveTile(TileProperties properties);
@@ -47,6 +51,7 @@ public:
 	inline glm::ivec2 WorldToScreen(const glm::ivec2& worldPos) const;
 
 	inline const GridProperties& GetGridProperties() const;
+	inline const TileMapArray& GetTileMapIndices() const;
 
 	void AddActiveTile();
 
@@ -56,6 +61,8 @@ private:
 
 	TileProperties activeTile;
 	GridProperties gridProperties;
+	
+	TileMapArray tileMapIndices;
 
 public:
 	bool snapToGrid = false;
@@ -90,6 +97,11 @@ inline glm::ivec2 SceneManager::WorldToScreen(const glm::ivec2& worldPos) const
 inline const GridProperties& SceneManager::GetGridProperties() const
 {
 	return gridProperties;
+}
+
+inline const SceneManager::TileMapArray& SceneManager::GetTileMapIndices() const
+{
+	return tileMapIndices;
 }
 
 

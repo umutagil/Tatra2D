@@ -9,10 +9,11 @@
 
 #include "../AssetStore/AssetStore.h"
 #include "../Game/SceneManager.h"
+#include "../Game/LevelLoader.h"
 
 #include "../Utilities/FileDialog.h"
 
-void RenderEditorGUISystem::Update(SceneManager& sceneManager, SDL_Renderer& renderer, AssetStore& assetStore, const SDL_Rect& camera)
+void RenderEditorGUISystem::Update(Registry& registry, SceneManager& sceneManager, SDL_Renderer& renderer, AssetStore& assetStore)
 {
     // Draw ImGui objects
     ImGui_ImplSDLRenderer_NewFrame();
@@ -21,7 +22,15 @@ void RenderEditorGUISystem::Update(SceneManager& sceneManager, SDL_Renderer& ren
 
 	if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("File")) {
-            
+            if (ImGui::MenuItem("Save map")) {
+                const std::string fileName = FileDialog::SaveFile();
+                if (fileName.empty()) {
+                    return;
+                }
+
+                LevelLoader::SaveMap(fileName, registry, sceneManager);
+            }
+
             ImGui::EndMenu();
         }
 
@@ -84,8 +93,10 @@ void RenderEditorGUISystem::DisplayLoadedTileset(SceneManager& sceneManager, Ass
             const ImU32 col = ImColor(10, 255, 10, 255);
             draw_list->AddRect(rectMin, rectMax, col);
 
+            const int tileIdxLinear = tileIdxY * (activeTilesetDimensions.x / tileSize) + tileIdxX;
+
             if (ImGui::IsMouseClicked(0)) {
-                sceneManager.SetActiveTile({ glm::ivec2(0), (tileIdxX * tileSize), (tileIdxY * tileSize), tileSize, tileSize, activeTilesetId });
+                sceneManager.SetActiveTile({ glm::ivec2(0), (tileIdxX * tileSize), (tileIdxY * tileSize), tileSize, tileSize, tileIdxLinear, activeTilesetId });
             }
         }
 

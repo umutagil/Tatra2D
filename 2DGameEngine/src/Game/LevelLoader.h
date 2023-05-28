@@ -1,7 +1,10 @@
 #pragma once
 
+#include <string>
+
 class Registry;
 class AssetStore;
+class SceneManager;
 
 namespace sol
 {
@@ -17,6 +20,8 @@ public:
 	~LevelLoader();
 
 	static void LoadLevel(sol::state& lua, Registry& registry, AssetStore& assetStore, SDL_Renderer& renderer, const int levelIndex);
+
+	static void SaveMap(const std::string& mapFileName, Registry& registry, SceneManager& sceneManager);
 };
 
 
